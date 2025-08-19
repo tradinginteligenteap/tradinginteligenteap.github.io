@@ -1,1 +1,0 @@
-# tradinginteligenteap.github.io
