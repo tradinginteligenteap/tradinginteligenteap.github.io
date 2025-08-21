@@ -3,18 +3,19 @@
 document.addEventListener('DOMContentLoaded', function() {
   // --- NAVBAR SCROLL EFFECT ---
   const navbar = document.querySelector('.nav-gold');
-  window.addEventListener('scroll', function() {
-    if (window.scrollY > 50) {
-      navbar.classList.add('scrolled');
-    } else {
-      navbar.classList.remove('scrolled');
-    }
-  });
+  if (navbar) {
+    window.addEventListener('scroll', function() {
+      if (window.scrollY > 50) {
+        navbar.classList.add('scrolled');
+      } else {
+        navbar.classList.remove('scrolled');
+      }
+    });
+  }
 
   // --- SIGNATURE PAD SETUP ---
+  let signaturePad = null;
   const canvas = document.getElementById('signatureCanvas');
-  let signaturePad;
-  
   if (canvas) {
     // Adjust canvas for high DPI displays
     const ratio = Math.max(window.devicePixelRatio || 1, 1);
@@ -29,9 +30,14 @@ document.addEventListener('DOMContentLoaded', function() {
       maxWidth: 3,
     });
     
-    document.getElementById('clearSignature')?.addEventListener('click', () => {
-      signaturePad.clear();
-    });
+    const clearSignatureBtn = document.getElementById('clearSignature');
+    if (clearSignatureBtn) {
+      clearSignatureBtn.addEventListener('click', () => {
+        if (signaturePad) {
+          signaturePad.clear();
+        }
+      });
+    }
     
     // Make signature pad responsive
     window.addEventListener('resize', function() {
@@ -41,7 +47,7 @@ document.addEventListener('DOMContentLoaded', function() {
       canvas.getContext("2d").scale(ratio, ratio);
       
       // Reapply the signature if it exists
-      if (!signaturePad.isEmpty()) {
+      if (signaturePad && !signaturePad.isEmpty()) {
         const data = signaturePad.toData();
         signaturePad.clear();
         signaturePad.fromData(data);
@@ -66,14 +72,23 @@ document.addEventListener('DOMContentLoaded', function() {
       const button = event.relatedTarget;
       const product = button?.getAttribute('data-product') || 'LeidyBot1';
       const price = button?.getAttribute('data-price') || '260';
-      document.getElementById('modalProductName').textContent = product;
-      document.getElementById('modalProductPrice').textContent = `$${price}`;
+      
+      const modalProductName = document.getElementById('modalProductName');
+      const modalProductPrice = document.getElementById('modalProductPrice');
+      
+      if (modalProductName) modalProductName.textContent = product;
+      if (modalProductPrice) modalProductPrice.textContent = `$${price}`;
       
       // Reset form when modal opens
-      document.getElementById('userName').value = '';
-      document.getElementById('userEmail').value = '';
-      document.getElementById('userPhone').value = '';
-      document.getElementById('agreeTermsModal').checked = false;
+      const userName = document.getElementById('userName');
+      const userEmail = document.getElementById('userEmail');
+      const userPhone = document.getElementById('userPhone');
+      const agreeTermsModal = document.getElementById('agreeTermsModal');
+      
+      if (userName) userName.value = '';
+      if (userEmail) userEmail.value = '';
+      if (userPhone) userPhone.value = '';
+      if (agreeTermsModal) agreeTermsModal.checked = false;
     });
   }
 
@@ -81,11 +96,17 @@ document.addEventListener('DOMContentLoaded', function() {
   const paymentRadios = document.querySelectorAll('input[name="paymentMethod"]');
   function updatePaymentInfo() {
     const selected = document.querySelector('input[name="paymentMethod"]:checked')?.value;
-    document.getElementById('paypalInfo').style.display = selected === 'paypal' ? 'block' : 'none';
-    document.getElementById('bankInfo').style.display = selected === 'bank' ? 'block' : 'none';
+    const paypalInfo = document.getElementById('paypalInfo');
+    const bankInfo = document.getElementById('bankInfo');
+    
+    if (paypalInfo) paypalInfo.style.display = selected === 'paypal' ? 'block' : 'none';
+    if (bankInfo) bankInfo.style.display = selected === 'bank' ? 'block' : 'none';
   }
-  paymentRadios.forEach(r => r.addEventListener('change', updatePaymentInfo));
-  updatePaymentInfo();
+  
+  if (paymentRadios.length > 0) {
+    paymentRadios.forEach(r => r.addEventListener('change', updatePaymentInfo));
+    updatePaymentInfo();
+  }
 
   // --- COPY HELPERS ---
   function copyToClipboard(text) {
@@ -96,8 +117,15 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
   
-  document.getElementById('copyPaypal')?.addEventListener('click', () => copyToClipboard('@williarvi'));
-  document.getElementById('copyBankKey')?.addEventListener('click', () => copyToClipboard('@WAV687'));
+  const copyPaypalBtn = document.getElementById('copyPaypal');
+  if (copyPaypalBtn) {
+    copyPaypalBtn.addEventListener('click', () => copyToClipboard('@williarvi'));
+  }
+  
+  const copyBankKeyBtn = document.getElementById('copyBankKey');
+  if (copyBankKeyBtn) {
+    copyBankKeyBtn.addEventListener('click', () => copyToClipboard('@WAV687'));
+  }
 
   // --- VALIDATION & UTILITIES ---
   function validateEmail(email) {
@@ -127,7 +155,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // Auto remove after 5 seconds
     setTimeout(() => {
       if (alertDiv.parentNode) {
-        bootstrap.Alert.getOrCreateInstance(alertDiv).close();
+        const bsAlert = new bootstrap.Alert(alertDiv);
+        bsAlert.close();
       }
     }, 5000);
   }
@@ -177,16 +206,15 @@ document.addEventListener('DOMContentLoaded', function() {
     doc.setTextColor(0, 0, 0);
     
     const terms = [
-      'El objeto del presente contrato es la licencia de uso del software de trading',
-      'automatizado bajo los términos y condiciones aquí establecidos. El VENDEDOR',
-      'garantiza que el software funciona según las especificaciones técnicas descritas',
-      'pero no garantiza resultados financieros específicos debido a la naturaleza',
-      'impredecible de los mercados financieros.'
+      'El vendedor transfiere al comprador los derechos de uso del software indicado.',
+      'El vendedor no garantiza resultados financieros específicos.',
+      'El comprador entiende que el software puede permanecer inactivo en periodos de riesgo elevado.',
+      'Se aplican los términos y condiciones publicados en el sitio.'
     ];
     
     let y = 138;
     terms.forEach(line => { 
-      doc.text(line, 14, y, { maxWidth: 180 }); 
+      doc.text('- ' + line, 14, y); 
       y += 6; 
     });
     
@@ -298,119 +326,140 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   // --- PAYPAL FLOW ---
-  document.getElementById('paypalBtn')?.addEventListener('click', function() {
-    const name = document.getElementById('userName')?.value;
-    const email = document.getElementById('userEmail')?.value;
-    const agree = document.getElementById('agreeTermsModal')?.checked;
+  const paypalBtn = document.getElementById('paypalBtn');
+  if (paypalBtn) {
+    paypalBtn.addEventListener('click', function() {
+      const name = document.getElementById('userName')?.value;
+      const email = document.getElementById('userEmail')?.value;
+      const agree = document.getElementById('agreeTermsModal')?.checked;
 
-    if (!name || !email || !agree) {
-      showAlert('Completa nombre, email y acepta el contrato antes de continuar', 'danger');
-      return;
-    }
-    if (!validateEmail(email)) {
-      showAlert('Por favor, introduce un email válido', 'danger');
-      return;
-    }
-
-    const productName = document.getElementById('modalProductName').textContent || 'LeidyBot1';
-    const productPrice = (document.getElementById('modalProductPrice').textContent || '$260').replace('$', '').trim();
-
-    const userData = collectUserDataFromPayment();
-    const productData = { name: productName, price: productPrice };
-    const paymentData = { method: 'PayPal', reference: '@williarvi', date: userData.date };
-
-    // Generate PDFs
-    const contractBlob = generateContractPDFBlob(userData, productData);
-    const invoiceBlob = generateInvoicePDFBlob(userData, productData, paymentData);
-
-    // Download both
-    downloadBlob(contractBlob, `Contrato_${productName}_${userData.name.replace(/\s+/g, '_')}.pdf`);
-    downloadBlob(invoiceBlob, `Factura_${productName}_${userData.name.replace(/\s+/g, '_')}.pdf`);
-
-    showAlert('Factura y contrato generados. Serás redirigido a PayPal.', 'success');
-
-    // Redirect to PayPal after a short delay
-    setTimeout(() => {
-      window.open('https://www.paypal.com/co/home', '_blank');
-      
-      // Close modal
-      const modal = bootstrap.Modal.getInstance(document.getElementById('checkoutModal'));
-      if (modal) modal.hide();
-      
-      // Clear form fields
-      document.getElementById('userName').value = '';
-      document.getElementById('userEmail').value = '';
-      document.getElementById('userPhone').value = '';
-      document.getElementById('agreeTermsModal').checked = false;
-      
-      if (signaturePad) {
-        signaturePad.clear();
+      if (!name || !email || !agree) {
+        showAlert('Completa nombre, email y acepta el contrato antes de continuar', 'danger');
+        return;
       }
-    }, 1500);
-  });
+      if (!validateEmail(email)) {
+        showAlert('Por favor, introduce un email válido', 'danger');
+        return;
+      }
+
+      const productName = document.getElementById('modalProductName')?.textContent || 'LeidyBot1';
+      const productPrice = (document.getElementById('modalProductPrice')?.textContent || '$260').replace('$', '').trim();
+
+      const userData = collectUserDataFromPayment();
+      const productData = { name: productName, price: productPrice };
+      const paymentData = { method: 'PayPal', reference: '@williarvi', date: userData.date };
+
+      // Generate PDFs
+      const contractBlob = generateContractPDFBlob(userData, productData);
+      const invoiceBlob = generateInvoicePDFBlob(userData, productData, paymentData);
+
+      // Download both
+      downloadBlob(contractBlob, `Contrato_${productName}_${userData.name.replace(/\s+/g, '_')}.pdf`);
+      downloadBlob(invoiceBlob, `Factura_${productName}_${userData.name.replace(/\s+/g, '_')}.pdf`);
+
+      showAlert('Factura y contrato generados. Serás redirigido a PayPal.', 'success');
+
+      // Redirect to PayPal after a short delay
+      setTimeout(() => {
+        window.open('https://www.paypal.com/co/home', '_blank');
+        
+        // Close modal
+        const modalElement = document.getElementById('checkoutModal');
+        if (modalElement) {
+          const modal = bootstrap.Modal.getInstance(modalElement);
+          if (modal) modal.hide();
+        }
+        
+        // Clear form fields
+        const userName = document.getElementById('userName');
+        const userEmail = document.getElementById('userEmail');
+        const userPhone = document.getElementById('userPhone');
+        const agreeTermsModal = document.getElementById('agreeTermsModal');
+        
+        if (userName) userName.value = '';
+        if (userEmail) userEmail.value = '';
+        if (userPhone) userPhone.value = '';
+        if (agreeTermsModal) agreeTermsModal.checked = false;
+        
+        if (signaturePad) {
+          signaturePad.clear();
+        }
+      }, 1500);
+    });
+  }
 
   // --- BANK FLOW ---
-  document.getElementById('confirmBankPayment')?.addEventListener('click', function() {
-    const name = document.getElementById('userName')?.value;
-    const email = document.getElementById('userEmail')?.value;
-    const agree = document.getElementById('agreeTermsModal')?.checked;
+  const confirmBankPaymentBtn = document.getElementById('confirmBankPayment');
+  if (confirmBankPaymentBtn) {
+    confirmBankPaymentBtn.addEventListener('click', function() {
+      const name = document.getElementById('userName')?.value;
+      const email = document.getElementById('userEmail')?.value;
+      const agree = document.getElementById('agreeTermsModal')?.checked;
 
-    if (!name || !email || !agree) {
-      showAlert('Completa nombre, email y acepta el contrato antes de confirmar', 'danger');
-      return;
-    }
-    if (!validateEmail(email)) {
-      showAlert('Por favor, introduce un email válido', 'danger');
-      return;
-    }
+      if (!name || !email || !agree) {
+        showAlert('Completa nombre, email y acepta el contrato antes de confirmar', 'danger');
+        return;
+      }
+      if (!validateEmail(email)) {
+        showAlert('Por favor, introduce un email válido', 'danger');
+        return;
+      }
 
-    const productName = document.getElementById('modalProductName').textContent || 'LeidyBot1';
-    const productPrice = (document.getElementById('modalProductPrice').textContent || '$260').replace('$', '').trim();
+      const productName = document.getElementById('modalProductName')?.textContent || 'LeidyBot1';
+      const productPrice = (document.getElementById('modalProductPrice')?.textContent || '$260').replace('$', '').trim();
 
-    const userData = collectUserDataFromPayment();
-    const productData = { name: productName, price: productPrice };
-    const paymentData = { method: 'Transferencia Bancaria', reference: '@WAV687', date: userData.date };
+      const userData = collectUserDataFromPayment();
+      const productData = { name: productName, price: productPrice };
+      const paymentData = { method: 'Transferencia Bancaria', reference: '@WAV687', date: userData.date };
 
-    // Generate PDFs
-    const contractBlob = generateContractPDFBlob(userData, productData);
-    const invoiceBlob = generateInvoicePDFBlob(userData, productData, paymentData);
+      // Generate PDFs
+      const contractBlob = generateContractPDFBlob(userData, productData);
+      const invoiceBlob = generateInvoicePDFBlob(userData, productData, paymentData);
 
-    // Download both
-    downloadBlob(contractBlob, `Contrato_${productName}_${userData.name.replace(/\s+/g, '_')}.pdf`);
-    downloadBlob(invoiceBlob, `Factura_${productName}_${userData.name.replace(/\s+/g, '_')}.pdf`);
+      // Download both
+      downloadBlob(contractBlob, `Contrato_${productName}_${userData.name.replace(/\s+/g, '_')}.pdf`);
+      downloadBlob(invoiceBlob, `Factura_${productName}_${userData.name.replace(/\s+/g, '_')}.pdf`);
 
-    showAlert('Documentos descargados. Realiza la transferencia a la cuenta NU (llave @WAV687) y envía el comprobante.', 'success');
+      showAlert('Documentos descargados. Realiza la transferencia a la cuenta NU (llave @WAV687) y envía el comprobante.', 'success');
 
-    // Close modal
-    const modal = bootstrap.Modal.getInstance(document.getElementById('checkoutModal'));
-    if (modal) modal.hide();
-  });
+      // Close modal
+      const modalElement = document.getElementById('checkoutModal');
+      if (modalElement) {
+        const modal = bootstrap.Modal.getInstance(modalElement);
+        if (modal) modal.hide();
+      }
+    });
+  }
 
   // --- DOWNLOAD CONTRACT BUTTON (contract section) ---
-  document.getElementById('downloadContractBtn')?.addEventListener('click', function() {
-    if (!document.getElementById('agreeContract')?.checked) {
-      showAlert('Debes aceptar el contrato antes de descargar.', 'danger');
-      return;
-    }
-    
-    const productName = 'LeidyBot1';
-    const productPrice = '260';
-    const userData = {
-      name: document.getElementById('contractName')?.value || '',
-      id: document.getElementById('contractId')?.value || '',
-      email: '',
-      phone: document.getElementById('contractPhone')?.value || '',
-      address: document.getElementById('contractAddress')?.value || '',
-      date: new Date().toLocaleDateString('es-ES'),
-      signature: signaturePad && !signaturePad.isEmpty() ? signaturePad.toDataURL('image/png') : null
-    };
-    
-    const productData = { name: productName, price: productPrice };
-    const contractBlob = generateContractPDFBlob(userData, productData);
-    
-    downloadBlob(contractBlob, `Contrato_${productName}_${userData.name.replace(/\s+/g, '_')}.pdf`);
-    showAlert('Contrato descargado correctamente', 'success');
-  });
+  const downloadContractBtn = document.getElementById('downloadContractBtn');
+  if (downloadContractBtn) {
+    downloadContractBtn.addEventListener('click', function() {
+      const agreeContract = document.getElementById('agreeContract');
+      if (!agreeContract?.checked) {
+        showAlert('Debes aceptar el contrato antes de descargar.', 'danger');
+        return;
+      }
+      
+      const productName = 'LeidyBot1';
+      const productPrice = '260';
+      const userData = {
+        name: document.getElementById('contractName')?.value || '',
+        id: document.getElementById('contractId')?.value || '',
+        email: '',
+        phone: document.getElementById('contractPhone')?.value || '',
+        address: document.getElementById('contractAddress')?.value || '',
+        date: new Date().toLocaleDateString('es-ES'),
+        signature: signaturePad && !signaturePad.isEmpty() ? signaturePad.toDataURL('image/png') : null
+      };
+      
+      const productData = { name: productName, price: productPrice };
+      const contractBlob = generateContractPDFBlob(userData, productData);
+      
+      downloadBlob(contractBlob, `Contrato_${productName}_${userData.name.replace(/\s+/g, '_')}.pdf`);
+      showAlert('Contrato descargado correctamente', 'success');
+    });
+  }
 
   // --- WAITLIST FORM ---
   const waitlistForm = document.getElementById('waitlistForm');
@@ -428,8 +477,11 @@ document.addEventListener('DOMContentLoaded', function() {
       waitlistForm.reset();
       
       setTimeout(() => { 
-        const modal = bootstrap.Modal.getInstance(document.getElementById('waitlistModal')); 
-        if (modal) modal.hide(); 
+        const modalElement = document.getElementById('waitlistModal');
+        if (modalElement) {
+          const modal = bootstrap.Modal.getInstance(modalElement);
+          if (modal) modal.hide();
+        }
       }, 1500);
     });
   }
@@ -440,13 +492,7 @@ document.addEventListener('DOMContentLoaded', function() {
     { name: 'Carlos M.', text: '"LeidyBot1 ha transformado mi forma de operar. La gestión de riesgo es excepcional y los resultados son consistentes mes tras mes."' },
     { name: 'Ana R.', text: '"Estoy impaciente por probar WilliBot1. Si es la mitad de bueno como LeidyBot1, será una revolución en el trading automatizado."' },
     { name: 'Javier L.', text: '"Opero con LeidyBot1 en 3 cuentas diferentes con configuraciones distintas. Los resultados son consistentes en todas."' },
-    { name: 'Laura T.', text: '"Invertí $500 en enero y hoy tengo más de $9,000. La mejor decisión financiera que he tomado."' },
-    { name: 'Miguel Ángel', text: '"Llevo 4 meses usando LeidyBot1 y he obtenido un 25% de rentabilidad mensual. Superó todas mis expectativas."' },
-    { name: 'Sofía R.', text: '"El soporte es excelente. Me ayudaron a configurar todo y resolver mis dudas rápidamente."' },
-    { name: 'Ricardo P.', text: '"Después de probar varios EAs, finalmente encontré uno que realmente funciona. LeidyBot1 es increíble."' },
-    { name: 'Elena C.', text: '"La gestión de riesgo es lo que más me gusta. Me siento seguro incluso en mercados volátiles."' },
-    { name: 'Diego M.', text: '"Empecé con $200 y en 6 meses tengo $2,500. Los resultados hablan por sí solos."' },
-    { name: 'Carolina V.', text: '"Recomiendo LeidyBot1 a todos mis amigos. Es transparente y cumple lo que promete."' }
+    { name: 'Laura T.', text: '"Invertí $500 en enero y hoy tengo más de $9,000. La mejor decisión financiera que he tomado."' }
   ];
   
   let testimonials = JSON.parse(localStorage.getItem('ti_testimonials')) || initialTestimonials;
