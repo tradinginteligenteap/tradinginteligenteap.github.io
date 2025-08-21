@@ -1,797 +1,1857 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="LeidyBot1 - Robot de Trading Automatizado con Inteligencia Artificial para MetaTrader 5">
-    <meta name="keywords" content="trading robot, forex, EA, MetaTrader 5, trading automatizado, LeidyBot1">
-    <title>LeidyBot1 | Robot de Trading Inteligente</title>
-    <link rel="icon" href="images/favicon.ico" type="image/x-icon">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;800;900&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
-    <link rel="stylesheet" href="css/styles.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/signature_pad/1.5.3/signature_pad.min.js"></script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>LeidyBot1 - Trading Inteligente</title>
+
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- PDF & Signature libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/signature_pad/1.5.3/signature_pad.min.js"></script>
+
+    <style>
+        /* Variables mejoradas */
+        :root {
+            --gold: #FFD700;
+            --dark-gold: #C99E00;
+            --light-gold: #FFED4E;
+            --bg-dark: #050505;
+            --card-dark: #0b0b0b;
+            --card-darker: #080808;
+            --muted: #ffffff;
+            --soft-bg: #1a1a1a;
+            --accent: rgba(255,215,0,0.1);
+            --glass: rgba(255,255,255,0.05);
+            --shadow: rgba(0,0,0,0.7);
+            --text-light: #ffffff;
+            --text-lighter: #ffffff;
+        }
+
+        /* Base mejorada */
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            margin: 0;
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(135deg, #030303 0%, #070707 50%, #0a0a0a 100%);
+            color: var(--text-light);
+            -webkit-font-smoothing: antialiased;
+            scroll-behavior: smooth;
+            line-height: 1.6;
+        }
+
+        /* NAV */
+        .nav-gold {
+            background: linear-gradient(90deg, rgba(0,0,0,0.95), rgba(10,10,10,0.98));
+            border-bottom: 1px solid rgba(255,215,0,0.2);
+            box-shadow: 0 8px 30px var(--shadow);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .nav-gold.scrolled {
+            padding: 0.5rem 0;
+            background: rgba(5,5,5,0.95);
+        }
+
+        .logo-img {
+            width: 70px;
+            height: 70px;
+            object-fit: cover;
+            border-radius: 12px;
+            box-shadow: 0 6px 25px rgba(0,0,0,0.5);
+            transition: all 0.3s ease;
+            border: 2px solid var(--gold);
+        }
+
+        .logo-img:hover {
+            transform: scale(1.05) rotate(2deg);
+            box-shadow: 0 8px 30px rgba(255,215,0,0.2);
+        }
+
+        .brand-title {
+            font-weight: 800;
+            font-size: 1.5rem;
+            letter-spacing: 0.5px;
+        }
+
+        .brand-sub {
+            font-size: 0.75rem;
+            color: var(--muted);
+            letter-spacing: 1px;
+        }
+
+        .navbar-nav .nav-link {
+            position: relative;
+            padding: 0.5rem 1.2rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            color: var(--text-light);
+        }
+
+        .navbar-nav .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--gold), var(--dark-gold));
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+
+        .navbar-nav .nav-link:hover::after {
+            width: 70%;
+        }
+
+        .navbar-nav .nav-link:hover {
+            color: var(--gold);
+        }
+
+        /* HERO mejorado */
+        .hero-section {
+            text-align: center;
+            padding: 7rem 1rem;
+            background: linear-gradient(135deg, rgba(0,0,0,0.7), rgba(0,0,0,0.7)), 
+                        url('https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80') center/cover no-repeat;
+            border-bottom: 1px solid rgba(255,215,0,0.15);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 50% 50%, rgba(255,215,0,0.1) 0%, transparent 60%);
+        }
+
+        .hero-section h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.7);
+            letter-spacing: -0.5px;
+        }
+
+        .hero-section .lead {
+            font-size: 1.35rem;
+            color: var(--text-lighter);
+            margin-bottom: 2.5rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            font-weight: 400;
+        }
+
+        .text-gold {
+            color: var(--gold);
+            background: linear-gradient(135deg, var(--gold), var(--dark-gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+        }
+
+        /* Buttons mejorados */
+        .btn-cta {
+            background: linear-gradient(135deg, var(--gold), var(--dark-gold));
+            color: #000;
+            border: none;
+            padding: 14px 28px;
+            font-weight: 700;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(255,215,0,0.2);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-cta::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: all 0.6s ease;
+        }
+
+        .btn-cta:hover::before {
+            left: 100%;
+        }
+
+        .btn-cta:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(255,215,0,0.3);
+        }
+
+        .btn-gold {
+            background: linear-gradient(135deg, var(--gold), var(--dark-gold));
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(255,215,0,0.15);
+        }
+
+        .btn-gold:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(255,215,0,0.25);
+        }
+
+        .btn-outline-gold {
+            background: transparent;
+            border: 2px solid var(--gold);
+            color: var(--gold);
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-outline-gold:hover {
+            background: var(--gold);
+            color: #000;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(255,215,0,0.2);
+        }
+
+        .btn-ghost {
+            background: transparent;
+            border: 2px solid rgba(255,255,255,0.1);
+            color: #fff;
+            border-radius: 10px;
+            padding: 10px 20px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-ghost:hover {
+            background: rgba(255,255,255,0.05);
+            border-color: rgba(255,215,0,0.4);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(255,215,0,0.1);
+        }
+
+        /* Cards & product mejorados */
+        .card {
+            background: linear-gradient(135deg, var(--card-dark), var(--card-darker));
+            border-radius: 16px;
+            border: 1px solid rgba(255,215,0,0.1);
+            overflow: hidden;
+            transition: all 0.4s ease;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+            border-color: rgba(255,215,0,0.3);
+        }
+
+        .product-card {
+            box-shadow: 0 18px 40px var(--shadow);
+            overflow: hidden;
+        }
+
+        .product-media {
+            background: linear-gradient(135deg, #0f0f0f, #121212);
+            border-right: 1px solid rgba(255,215,0,0.1);
+            position: relative;
+        }
+
+        .product-media::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 30%;
+            background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+        }
+
+        .img-thumb {
+            width: 80px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .img-thumb:hover {
+            transform: scale(1.1);
+            border-color: var(--gold);
+            box-shadow: 0 5px 15px rgba(255,215,0,0.2);
+        }
+
+        .robot-description {
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+
+        .robot-description p {
+            margin-bottom: 1.2rem;
+        }
+
+        .robot-description strong {
+            color: var(--gold);
+            font-weight: 700;
+        }
+
+        /* Results mejorados */
+        .bg-soft {
+            background: var(--soft-bg);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .bg-soft::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 70%, rgba(255,215,0,0.05) 0%, transparent 40%);
+        }
+
+        .result-card {
+            background: linear-gradient(135deg, #0b0b0b, #0f0f0f);
+            border-left: 6px solid var(--gold);
+            border-radius: 16px;
+            color: #fff;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .result-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255,215,0,0.03), transparent);
+        }
+
+        .result-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.5);
+            border-left: 6px solid var(--light-gold);
+        }
+
+        /* Testimonials mejorados */
+        #testimonials {
+            background: linear-gradient(135deg, #080808, #0a0a0a);
+            position: relative;
+            overflow: hidden;
+        }
+
+        #testimonials::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 80% 20%, rgba(255,215,0,0.05) 0%, transparent 40%);
+        }
+
+        .testimonial-card {
+            background: linear-gradient(135deg, #0c0c0c, #101010);
+            border-radius: 16px;
+            padding: 2rem;
+            height: 100%;
+            border: 1px solid rgba(255,215,0,0.15);
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+
+        .testimonial-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.4);
+            border-color: rgba(255,215,0,0.3);
+        }
+
+        .testimonial-avatar {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--gold), var(--dark-gold));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.8rem;
+            color: #000;
+            margin-right: 1.5rem;
+            flex-shrink: 0;
+            box-shadow: 0 5px 15px rgba(255,215,0,0.3);
+        }
+
+        .carousel-item {
+            padding: 2rem;
+        }
+
+        /* Pricing mejorado */
+        .pricing-card {
+            border-radius: 20px;
+            padding: 2.5rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            border: 1px solid rgba(255,215,0,0.1);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+        }
+
+        .pricing-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at top right, rgba(255,215,0,0.08) 0%, transparent 70%);
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+            border-color: rgba(255,215,0,0.2);
+        }
+
+        .price-block s {
+            color: #aaa;
+            font-size: 1.3rem;
+        }
+
+        .price-block h2 {
+            font-size: 3rem;
+            margin: 0.5rem 0;
+            font-weight: 800;
+        }
+
+        .note {
+            color: var(--muted);
+            font-size: 0.95rem;
+        }
+
+        .pricing-features {
+            list-style: none;
+            padding: 0;
+            margin: 2rem 0;
+        }
+
+        .pricing-features li {
+            padding: 0.7rem 0;
+            position: relative;
+            padding-left: 2.2rem;
+            font-size: 1rem;
+        }
+
+        .pricing-features li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--gold);
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        /* Contract (white bg) mejorado */
+        #contract {
+            background: #f8f9fa;
+        }
+
+        .contract-white {
+            background: #ffffff;
+            color: #111;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            padding: 3rem;
+            border: 1px solid #eee;
+        }
+
+        .contract-white h4 {
+            border-bottom: 2px solid var(--gold);
+            padding-bottom: 12px;
+            margin-top: 2rem;
+            color: #222;
+            font-weight: 700;
+        }
+
+        .contract-white h5 {
+            color: #333;
+            margin-top: 1.5rem;
+            font-weight: 600;
+        }
+
+        .contract-white p, .contract-white li {
+            color: #444;
+            line-height: 1.6;
+        }
+
+        .contract-white ul {
+            padding-left: 1.5rem;
+        }
+
+        .contract-white li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Signature mejorado */
+        .signature-pad {
+            background: #fff;
+            border-radius: 12px;
+            padding: 1rem;
+            border: 2px dashed #ddd;
+            transition: all 0.3s ease;
+        }
+
+        .signature-pad:focus-within {
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(255,215,0,0.1);
+        }
+
+        /* Payment box mejorado */
+        .payment-methods {
+            background: linear-gradient(135deg, #080808, #0e0e0e);
+            padding: 2rem;
+            border-radius: 16px;
+            color: #e9ecef;
+            border: 1px solid rgba(255,215,0,0.15);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+
+        .payment-info .account-box {
+            background: rgba(255,215,0,0.1);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid rgba(255,215,0,0.2);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        /* Forms mejorados */
+        .form-control {
+            background: rgba(255,255,255,0.07);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: #fff;
+            padding: 12px 16px;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+
+        .form-control:focus {
+            background: rgba(255,255,255,0.1);
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(255,215,0,0.15);
+            color: #fff;
+        }
+
+        .form-control::placeholder {
+            color: #bdbdbd;
+        }
+
+        .contract-white .form-control {
+            background: #f8f9fa;
+            border: 1px solid #ced4da;
+            color: #495057;
+        }
+
+        .contract-white .form-control:focus {
+            background: #fff;
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(255,215,0,0.2);
+            color: #495057;
+        }
+
+        /* Footer mejorado */
+        .footer-dark {
+            background: linear-gradient(135deg, #030303, #050505);
+            color: var(--muted);
+            border-top: 1px solid rgba(255,215,0,0.1);
+            padding: 3rem 0 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .footer-dark::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--gold), transparent);
+        }
+
+        .footer-dark a {
+            color: var(--muted);
+            transition: all 0.3s ease;
+            font-size: 1.2rem;
+        }
+
+        .footer-dark a:hover {
+            color: var(--gold);
+            transform: translateY(-3px);
+        }
+
+        /* Helpers & responsive mejorados */
+        .text-muted {
+            color: #bfc3c7 !important;
+        }
+
+        section {
+            padding: 6rem 0;
+        }
+
+        .section-title {
+            position: relative;
+            margin-bottom: 3.5rem;
+            text-align: center;
+            font-weight: 800;
+            font-size: 2.5rem;
+        }
+
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--gold), var(--dark-gold));
+            margin: 1.2rem auto;
+            border-radius: 4px;
+        }
+
+        .badge {
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+        }
+
+        /* Animaciones y efectos */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.8s ease forwards;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255,215,0,0.4); }
+            70% { box-shadow: 0 0 0 15px rgba(255,215,0,0); }
+            100% { box-shadow: 0 0 0 0 rgba(255,215,0,0); }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .hero-section {
+                padding: 5rem 1rem;
+            }
+            .hero-section h1 {
+                font-size: 2.8rem;
+            }
+            .section-title {
+                font-size: 2.2rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero-section {
+                padding: 4rem 1rem;
+            }
+            .hero-section h1 {
+                font-size: 2.3rem;
+            }
+            .hero-section .lead {
+                font-size: 1.1rem;
+            }
+            .logo-img {
+                width: 55px;
+                height: 55px;
+            }
+            .brand-title {
+                font-size: 1.3rem;
+            }
+            section {
+                padding: 4rem 0;
+            }
+            .section-title {
+                font-size: 2rem;
+                margin-bottom: 2.5rem;
+            }
+            .testimonial-avatar {
+                width: 60px;
+                height: 60px;
+                font-size: 1.5rem;
+                margin-right: 1rem;
+            }
+            .pricing-card {
+                padding: 2rem;
+            }
+            .price-block h2 {
+                font-size: 2.5rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .hero-section h1 {
+                font-size: 2rem;
+            }
+            .btn-cta {
+                padding: 12px 20px;
+                font-size: 1rem;
+            }
+            .section-title {
+                font-size: 1.8rem;
+            }
+            .contract-white {
+                padding: 2rem 1.5rem;
+            }
+        }
+    </style>
 </head>
 <body>
-    <!-- Barra de navegación premium -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
-        <div class="container">
-            <a class="navbar-brand" href="#">
-                <img src="images/logo.png" alt="Trading Inteligente" height="40" class="me-2">
-                <span class="text-gradient">Trading</span> Inteligente
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" href="#hero">Inicio</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#features">Beneficios</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#results">Resultados</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#operation">Cómo Funciona</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#testimonials">Testimonios</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#pricing">Precios</a></li>
-                    <li class="nav-item ms-lg-3">
-                        <a href="#pricing" class="btn btn-premium btn-sm">
-                            <i class="fas fa-robot me-1"></i> Comprar Ahora
-                        </a>
-                    </li>
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg navbar-dark nav-gold sticky-top">
+  <div class="container">
+    <a class="navbar-brand d-flex align-items-center" href="#">
+      <img src="images/logo.png" alt="Logo Trading Inteligente" id="siteLogo" class="logo-img me-3">
+      <div>
+        <div class="brand-title">Trading <span class="text-gold">Inteligente</span></div>
+        <small class="brand-sub">LeidyBot1 • WilliBot1</small>
+      </div>
+    </a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navMenu">
+      <ul class="navbar-nav ms-auto align-items-lg-center">
+        <li class="nav-item"><a class="nav-link" href="#bots">Robots</a></li>
+        <li class="nav-item"><a class="nav-link" href="#results">Resultados</a></li>
+        <li class="nav-item"><a class="nav-link" href="#testimonials">Testimonios</a></li>
+        <li class="nav-item"><a class="nav-link" href="#pricing">Precios</a></li>
+        <li class="nav-item"><a class="nav-link" href="#contract">Contrato</a></li>
+        <li class="nav-item ms-3"><a class="btn btn-cta pulse" href="#pricing">Comprar Ahora</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero-section">
+  <div class="container text-center">
+    <h1 class="display-4 fw-bold fade-in">DOMINA EL MERCADO CON <span class="text-gold">INTELIGENCIA</span></h1>
+    <p class="lead text-muted">Robots para MetaTrader 5 centrados en calidad, gestión de riesgo y resultados sostenibles</p>
+    <div class="d-flex justify-content-center gap-3 mt-4">
+      <a href="#pricing" class="btn btn-cta btn-lg">Comprar Ahora</a>
+      <a href="#bots" class="btn btn-outline-light btn-lg">Ver Robots</a>
+    </div>
+  </div>
+</header>
+
+<!-- ROBOTS (multimedia integrada por robot) -->
+<section id="bots" class="py-5">
+  <div class="container">
+    <div class="text-center mb-5">
+      <h2 class="fw-bold section-title">Nuestros Robots</h2>
+      <p class="text-muted">Selecciona el robot que mejor se adapte a tu perfil</p>
+    </div>
+
+    <div class="row g-4">
+      <!-- LeidyBot1 -->
+      <div class="col-lg-6">
+        <div class="card product-card h-100">
+          <div class="row g-0 align-items-stretch">
+            <div class="col-md-6 product-media p-3">
+              <div class="ratio ratio-16x9 mb-3">
+                <iframe src="https://www.youtube.com/embed/TU_VIDEO_LEIDY" title="LeidyBot1 demo" allowfullscreen></iframe>
+              </div>
+              <div class="d-flex gap-2 gallery-thumb justify-content-center">
+                <img src="images/leidy1.jpg" class="img-thumb" alt="Leidy1">
+                <img src="images/leidy2.jpg" class="img-thumb" alt="Leidy2">
+                <img src="images/leidy3.jpg" class="img-thumb" alt="Leidy3">
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="card-body d-flex flex-column">
+                <h3 class="text-gold">LeidyBot1 <span class="badge bg-success ms-2">Disponible</span></h3>
+
+                <!-- Texto exacto solicitado -->
+                <div class="robot-description small mb-3">
+                  <p>🚀 ¡INVIERTE CON INTELIGENCIA: EL ROBOT QUE PRIORIZA CALIDAD SOBRE CANTIDAD! 🚀</p>
+                  <p>¿Buscas un crecimiento real y sostenido en el trading, sin operaciones innecesarias ni estrés? Leydi Bot 1 no es un robot más: es un sistema disciplinado que solo actúa cuando las oportunidades son claras, protegiendo tu capital y maximizando ganancias a mediano y largo plazo.</p>
+                  
+                  <p><strong>📊 RESULTADOS REALES (ENERO - AGOSTO 2025)</strong><br>
+                    ✅ Prueba 1: $50 → $1,100 (🔥 +2,100% de rentabilidad en 8 meses).<br>
+                    ✅ Prueba 2: $250 → $4,500 (🚀 +1,700% de crecimiento).</p>
+                  
+                  <p><strong>🔹 ¿Por qué estos resultados?</strong></p>
+                  <p>Filtros ultra-estrictos: Solo opera cuando el mercado ofrece señales de alta probabilidad.</p>
+                  <p>Cero saturación: No fuerza operaciones diarias. Calidad > Cantidad.</p>
+                  <p>Paciencia estratégica: Espera los momentos óptimos, evitando pérdidas innecesarias.</p>
+                  
+                  <p><strong>🎯 ¿PARA QUIÉN ES ESTE ROBOT?</strong><br>
+                    ✔ Inversores pacientes que entienden que el éxito financiero es un maratón, no un sprint.<br>
+                    ✔ Personas que odian el riesgo innecesario y prefieren crecimiento constante sobre ganancias rápidas y volátiles.<br>
+                    ✔ Traders que quieren olvidarse del estrés y dejar que una estrategia probada trabaje por ellos.</p>
+                  
+                  <p><strong>💡 CLAVES DEL ÉXITO</strong><br>
+                    🔹 Operaciones selectivas: Menos trades, pero con mayor porcentaje de aciertos.<br>
+                    🔹 Stop Loss inteligente: Protege tu capital en mercados peligrosos.<br>
+                    🔹 Take Profit basado en ATR: Aprovecha al máximo cada movimiento.</p>
+                  
+                  <p><strong>📈 ¿QUÉ PUEDES ESPERAR?</strong><br>
+                    Rentabilidad mensual variable (dependiendo de la volatilidad del mercado).<br>
+                    Crecimiento compuesto: Los resultados se aceleran con el tiempo.<br>
+                    Mínima intervención: Configúralo y olvídate, sin necesidad de estar pendiente.</p>
+                  
+                  <p><strong>⚠️ ADVERTENCIA IMPORTANTE</strong><br>
+                    Este no es un "get rich quick scheme". Requiere:<br>
+                    Capital inicial mínimo recomendado: $100 - $500 (para manejar drawdowns).<br>
+                    Horizonte de inversión: 6 meses mínimo (resultados óptimos a 1 año+).<br>
+                    Mentalidad disciplinada: No es para quienes buscan ganancias de la noche a la mañana.</p>
+                  
+                  <p><strong>💰 OFERTA DE LANZAMIENTO</strong><br>
+                    🔥 Precio normal: $350 → ¡SOLO $260 (OFF por tiempo limitado)!<br>
+                    ➕ Incluye:<br>
+                    ✔ Robot + Guía de instalación.<br>
+                    ✔ Soporte prioritario por 3 meses.<br>
+                    ✔ Estrategia detallada (para que entiendas cómo funciona).</p>
+                  
+                  <p><strong>📢 ¿CÓMO EMPEZAR?</strong><br>
+                    1️⃣ Compra Leydi Bot 1 en esta pagina o contáctanos directamente.<br>
+                    2️⃣ Recibe todo el material y configúralo en tu MetaTrader 5.<br>
+                    3️⃣ Deja que el robot opere con disciplina y revisa los resultados cada semana, o cada mes.</p>
+                </div>
+
+                <div class="mt-auto d-flex gap-2">
+                  <button class="btn btn-outline-gold" data-bs-toggle="modal" data-bs-target="#checkoutModal" data-product="LeidyBot1" data-price="260">
+                    <i class="fas fa-shopping-cart me-1"></i> Comprar
+                  </button>
+                  <a href="#results" class="btn btn-ghost">Ver Resultados</a>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- WilliBot1 -->
+      <div class="col-lg-6">
+        <div class="card product-card h-100">
+          <div class="row g-0 align-items-stretch">
+            <div class="col-md-6 product-media p-3">
+              <div class="ratio ratio-16x9 mb-3">
+                <iframe src="https://www.youtube.com/embed/TU_VIDEO_WILLI" title="WilliBot1 demo" allowfullscreen></iframe>
+              </div>
+              <div class="d-flex gap-2 gallery-thumb justify-content-center">
+                <img src="images/willi1.jpg" class="img-thumb" alt="Willi1">
+                <img src="images/willi2.jpg" class="img-thumb" alt="Willi2">
+                <img src="images/willi3.jpg" class="img-thumb" alt="Willi3">
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="card-body d-flex flex-column">
+                <h3 class="text-gold">WilliBot1 <span class="badge bg-warning text-dark ms-2">Preventa</span></h3>
+                <p class="small mb-2">Revolucionario EA con capacidad de aprendizaje automático que analiza el mercado en tiempo real, se autocorrige y genera sus propias estrategias.</p>
+                <ul class="small mb-3">
+                  <li>IA adaptativa</li>
+                  <li>Autocorrección y mejora continua</li>
+                  <li>Detección de trampas del mercado</li>
                 </ul>
+                <div class="mt-auto d-flex gap-2">
+                  <button class="btn btn-outline-gold" data-bs-toggle="modal" data-bs-target="#waitlistModal">
+                    <i class="fas fa-envelope me-1"></i> Lista de Espera
+                  </button>
+                  <a class="btn btn-ghost" href="#testimonials">Ver Testimonios</a>
+                </div>
+              </div>
             </div>
+          </div>
         </div>
-    </nav>
+      </div> <!-- End WilliBot1 -->
 
-    <!-- Hero Section Premium -->
-    <section id="hero" class="hero-section text-center">
-        <div class="container">
-            <div class="hero-content animate__animated animate__fadeIn">
-                <h1 class="display-3 fw-bold mb-4 animate__animated animate__fadeInDown">
-                    <span class="text-gradient">LeidyBot1</span> - Trading con Disciplina
-                </h1>
-                <p class="lead mb-5 animate__animated animate__fadeIn animate__delay-1s">
-                    El robot que prioriza calidad sobre cantidad - Operaciones estratégicas con gestión de riesgo profesional
-                </p>
-                <div class="animate__animated animate__fadeInUp animate__delay-1s">
-                    <a href="#pricing" class="btn btn-premium btn-lg px-4 me-2 me-md-3">
-                        <i class="fas fa-shopping-cart me-2"></i> Comprar Ahora
-                    </a>
-                    <a href="#features" class="btn btn-outline-light btn-lg px-4">
-                        <i class="fas fa-play-circle me-2"></i> Ver Demostración
-                    </a>
-                </div>
-            </div>
-            <div class="scroll-down animate__animated animate__fadeIn animate__delay-2s">
-                <a href="#features" class="text-white">
-                    <i class="fas fa-chevron-down"></i>
-                </a>
-            </div>
-        </div>
-    </section>
+    </div>
+  </div>
+</section>
 
-    <!-- Sección de Beneficios -->
-    <section id="features" class="py-5 bg-dark">
-        <div class="container">
-            <div class="text-center mb-5">
-                <h2 class="fw-bold text-gradient mb-3">🚀 ¡INVIERTE CON INTELIGENCIA!</h2>
-                <p class="lead text-light">El robot que prioriza calidad sobre cantidad</p>
-            </div>
-            
-            <div class="row g-4">
-                <div class="col-md-6">
-                    <div class="card feature-card h-100 bg-dark-2">
-                        <div class="card-body text-center p-4">
-                            <div class="feature-icon mb-3">
-                                <i class="fas fa-chart-line"></i>
-                            </div>
-                            <h4 class="text-gradient">Resultados Comprobados</h4>
-                            <p>Backtesting de 12 meses y operaciones reales con resultados consistentes en diferentes condiciones de mercado.</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="col-md-6">
-                    <div class="card feature-card h-100 bg-dark-2">
-                        <div class="card-body text-center p-4">
-                            <div class="feature-icon mb-3">
-                                <i class="fas fa-shield-alt"></i>
-                            </div>
-                            <h4 class="text-gradient">Gestión de Riesgo</h4>
-                            <p>Stop Loss dinámico y Trailing Stop inteligente para proteger tus ganancias y limitar pérdidas.</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="col-md-6">
-                    <div class="card feature-card h-100 bg-dark-2">
-                        <div class="card-body text-center p-4">
-                            <div class="feature-icon mb-3">
-                                <i class="fas fa-brain"></i>
-                            </div>
-                            <h4 class="text-gradient">Filtros Inteligentes</h4>
-                            <p>Solo opera cuando las condiciones son óptimas, evitando mercados peligrosos o de baja liquidez.</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="col-md-6">
-                    <div class="card feature-card h-100 bg-dark-2">
-                        <div class="card-body text-center p-4">
-                            <div class="feature-icon mb-3">
-                                <i class="fas fa-cogs"></i>
-                            </div>
-                            <h4 class="text-gradient">Configuración Flexible</h4>
-                            <p>Ajusta parámetros según tu perfil de riesgo y preferencias de trading.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Sección de Resultados Integrada -->
-    <section id="results" class="py-5 bg-gradient">
-        <div class="container">
-            <div class="text-center mb-5">
-                <h2 class="fw-bold text-white mb-3">📊 RESULTADOS REALES DE LEIDYBOT1</h2>
-                <p class="text-white-80">(Enero - Agosto 2025)</p>
-            </div>
-            
-            <div class="row g-4">
-                <div class="col-md-6">
-                    <div class="card result-card h-100">
-                        <div class="card-body text-center p-4">
-                            <div class="result-badge animate__animated animate__pulse animate__infinite">
-                                <i class="fas fa-fire"></i>
-                            </div>
-                            <h3 class="text-gradient">Prueba 1</h3>
-                            <h1 class="display-4 fw-bold text-white">$50 → $1,100</h1>
-                            <h4 class="text-success">+2,100% en 8 meses</h4>
-                            <p class="mt-3 text-white-80">Cuenta demo con configuración conservadora</p>
-                            <button class="btn btn-outline-light mt-2" data-bs-toggle="modal" data-bs-target="#result1Modal">
-                                <i class="fas fa-chart-bar me-2"></i> Ver Detalles
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="col-md-6">
-                    <div class="card result-card h-100">
-                        <div class="card-body text-center p-4">
-                            <div class="result-badge animate__animated animate__pulse animate__infinite">
-                                <i class="fas fa-rocket"></i>
-                            </div>
-                            <h3 class="text-gradient">Prueba 2</h3>
-                            <h1 class="display-4 fw-bold text-white">$250 → $4,500</h1>
-                            <h4 class="text-success">+1,700% de crecimiento</h4>
-                            <p class="mt-3 text-white-80">Cuenta real con configuración estándar</p>
-                            <button class="btn btn-outline-light mt-2" data-bs-toggle="modal" data-bs-target="#result2Modal">
-                                <i class="fas fa-chart-bar me-2"></i> Ver Detalles
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="text-center mt-5">
-                <div class="alert alert-premium d-inline-block">
-                    <i class="fas fa-info-circle me-2"></i> Estos resultados son históricos y no garantizan rendimientos futuros. El trading con margen conlleva riesgos.
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Sección de Operación con Multimedia Integrada -->
-    <section id="operation" class="py-5 bg-dark">
-        <div class="container">
-            <div class="text-center mb-5">
-                <h2 class="fw-bold text-gradient">¿CÓMO FUNCIONA LEIDYBOT1?</h2>
-                <p class="text-light">Descubre la tecnología detrás de nuestro robot de trading</p>
-            </div>
-            
-            <div class="row align-items-center">
-                <div class="col-lg-6 mb-4">
-                    <div class="operation-content">
-                        <div class="operation-step">
-                            <div class="step-number">1</div>
-                            <div class="step-content">
-                                <h4 class="text-gradient">Análisis del Mercado</h4>
-                                <p>LeidyBot1 analiza múltiples factores del mercado en tiempo real para identificar oportunidades reales.</p>
-                            </div>
-                        </div>
-                        
-                        <div class="operation-step">
-                            <div class="step-number">2</div>
-                            <div class="step-content">
-                                <h4 class="text-gradient">Filtrado Estricto</h4>
-                                <p>Aplica 12 filtros diferentes para confirmar que las condiciones son óptimas antes de operar.</p>
-                            </div>
-                        </div>
-                        
-                        <div class="operation-step">
-                            <div class="step-number">3</div>
-                            <div class="step-content">
-                                <h4 class="text-gradient">Ejecución Precisa</h4>
-                                <p>Realiza operaciones con spreads ajustados y slippage mínimo gracias a su algoritmo de ejecución.</p>
-                            </div>
-                        </div>
-                        
-                        <div class="operation-step">
-                            <div class="step-number">4</div>
-                            <div class="step-content">
-                                <h4 class="text-gradient">Gestión Inteligente</h4>
-                                <p>Administra cada operación con trailing stop dinámico y ajuste automático de lotes según el capital.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="col-lg-6">
-                    <div class="operation-media">
-                        <div class="ratio ratio-16x9">
-                            <iframe src="https://www.youtube.com/embed/TU_VIDEO_LEIDY" allowfullscreen></iframe>
-                        </div>
-                        <div class="gallery-grid mt-3">
-                            <img src="images/leidy1.jpg" class="gallery-thumbnail" data-bs-toggle="modal" data-bs-target="#imageModal" data-img="images/leidy1.jpg">
-                            <img src="images/leidy2.jpg" class="gallery-thumbnail" data-bs-toggle="modal" data-bs-target="#imageModal" data-img="images/leidy2.jpg">
-                            <img src="images/leidy3.jpg" class="gallery-thumbnail" data-bs-toggle="modal" data-bs-target="#imageModal" data-img="images/leidy3.jpg">
-                            <img src="images/leidy4.jpg" class="gallery-thumbnail" data-bs-toggle="modal" data-bs-target="#imageModal" data-img="images/leidy4.jpg">
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Sección de Testimonios Mejorada -->
-    <section id="testimonials" class="py-5 bg-gradient-reverse">
-        <div class="container">
-            <div class="text-center mb-5">
-                <h2 class="fw-bold text-white">OPINIONES DE NUESTROS CLIENTES</h2>
-                <p class="text-white-80">Lo que dicen los traders que usan LeidyBot1</p>
-            </div>
-            
-            <div class="testimonial-slider">
-                <div class="testimonial-item">
-                    <div class="testimonial-card">
-                        <div class="testimonial-rating">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                        </div>
-                        <p class="testimonial-text">"LeidyBot1 ha transformado mi forma de operar. La gestión de riesgo es excepcional y los filtros evitan muchas operaciones malas que antes tomaba manualmente."</p>
-                        <div class="testimonial-author">
-                            <h5 class="text-gradient">Carlos M.</h5>
-                            <small>Usuario desde Feb 2025</small>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="testimonial-item">
-                    <div class="testimonial-card">
-                        <div class="testimonial-rating">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star-half-alt"></i>
-                        </div>
-                        <p class="testimonial-text">"Opero con LeidyBot1 en 3 cuentas diferentes con configuraciones distintas. Los resultados son consistentes y el soporte siempre responde rápidamente."</p>
-                        <div class="testimonial-author">
-                            <h5 class="text-gradient">Javier L.</h5>
-                            <small>Usuario desde Ene 2025</small>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="testimonial-item">
-                    <div class="testimonial-card">
-                        <div class="testimonial-rating">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                        </div>
-                        <p class="testimonial-text">"Invertí $500 en enero y hoy tengo más de $9,000. Lo mejor es que no tuve que hacer nada: el robot solo operó cuando era realmente seguro."</p>
-                        <div class="testimonial-author">
-                            <h5 class="text-gradient">Laura T.</h5>
-                            <small>Usuario Beta</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Formulario para nuevos testimonios -->
-            <div class="row justify-content-center mt-5">
-                <div class="col-lg-8">
-                    <div class="card bg-dark-2">
-                        <div class="card-body p-4">
-                            <h4 class="text-gradient text-center mb-4">¿Ya usas LeidyBot1? ¡Comparte tu experiencia!</h4>
-                            <form id="testimonialForm">
-                                <div class="row g-3">
-                                    <div class="col-md-6">
-                                        <input type="text" class="form-control" placeholder="Tu nombre" required>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <input type="email" class="form-control" placeholder="Tu email" required>
-                                    </div>
-                                    <div class="col-12">
-                                        <textarea class="form-control" rows="3" placeholder="Tu testimonio" required></textarea>
-                                    </div>
-                                    <div class="col-12">
-                                        <div class="rating-input mb-3">
-                                            <span>Calificación:</span>
-                                            <i class="far fa-star" data-rating="1"></i>
-                                            <i class="far fa-star" data-rating="2"></i>
-                                            <i class="far fa-star" data-rating="3"></i>
-                                            <i class="far fa-star" data-rating="4"></i>
-                                            <i class="far fa-star" data-rating="5"></i>
-                                            <input type="hidden" id="ratingValue" value="0">
-                                        </div>
-                                    </div>
-                                    <div class="col-12 text-center">
-                                        <button type="submit" class="btn btn-premium">
-                                            <i class="fas fa-paper-plane me-2"></i> Enviar Testimonio
-                                        </button>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Sección de Precios -->
-    <section id="pricing" class="py-5 bg-dark">
-        <div class="container">
-            <div class="text-center mb-5">
-                <h2 class="fw-bold text-gradient">PLANES Y PRECIOS</h2>
-                <p class="text-light">Elige la opción que mejor se adapte a tus necesidades</p>
-            </div>
-            
-            <div class="row justify-content-center">
-                <div class="col-lg-8">
-                    <div class="card pricing-main-card">
-                        <div class="card-body">
-                            <div class="pricing-header">
-                                <h3 class="text-gradient">LeidyBot1</h3>
-                                <div class="pricing-badge">
-                                    <span class="badge bg-premium">OFERTA LIMITADA</span>
-                                </div>
-                            </div>
-                            
-                            <div class="pricing-price">
-                                <div class="original-price">$350 USD</div>
-                                <div class="discount-price">$260 USD</div>
-                                <div class="discount-percent">Ahorra 26%</div>
-                            </div>
-                            
-                            <div class="pricing-features">
-                                <ul>
-                                    <li><i class="fas fa-check-circle text-success me-2"></i> Licencia perpetua para 1 cuenta</li>
-                                    <li><i class="fas fa-check-circle text-success me-2"></i> Guía de instalación paso a paso</li>
-                                    <li><i class="fas fa-check-circle text-success me-2"></i> Soporte prioritario por 3 meses</li>
-                                    <li><i class="fas fa-check-circle text-success me-2"></i> Configuraciones recomendadas</li>
-                                    <li><i class="fas fa-check-circle text-success me-2"></i> Acceso al grupo VIP de Telegram</li>
-                                    <li><i class="fas fa-check-circle text-success me-2"></i> Actualizaciones gratuitas por 1 año</li>
-                                </ul>
-                            </div>
-                            
-                            <div class="text-center mt-4">
-                                <button class="btn btn-premium btn-lg" data-bs-toggle="modal" data-bs-target="#checkoutModal">
-                                    <i class="fas fa-shopping-cart me-2"></i> Comprar Ahora
-                                </button>
-                            </div>
-                            
-                            <div class="pricing-footer mt-3">
-                                <small class="text-muted">* Precio promocional válido hasta 30/09/2025</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="text-center mt-4">
-                <div class="payment-methods">
-                    <span class="text-light me-3">Aceptamos:</span>
-                    <i class="fab fa-cc-paypal payment-icon"></i>
-                    <i class="fas fa-university payment-icon"></i>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Sección de Contrato (ahora después de precios) -->
-    <section id="contract" class="py-5 bg-white">
-        <div class="container">
-            <div class="text-center mb-5">
-                <h2 class="fw-bold text-dark">CONTRATO DE COMPRA</h2>
-                <p class="text-dark">Términos y condiciones para el uso de LeidyBot1</p>
-            </div>
-            
-            <div class="card contract-card">
-                <div class="card-body">
-                    <div class="contract-content">
-                        <h4 class="contract-section-title">1. OBJETO DEL CONTRATO</h4>
-                        <p>TRADING INTELIGENTE, en adelante "EL VENDEDOR", celebra el presente contrato de licencia de software con EL COMPRADOR, quien declara haber proporcionado información veraz en el formulario de compra.</p>
-                        
-                        <h4 class="contract-section-title">2. GARANTÍAS DE FUNCIONAMIENTO</h4>
-                        <p>EL VENDEDOR garantiza que el Software:</p>
-                        <ul>
-                            <li>Opera exclusivamente cuando se cumplen los parámetros predefinidos de su estrategia central.</li>
-                            <li>Puede permanecer inactivo por días, semanas o meses cuando detecta alto riesgo de pérdida.</li>
-                            <li>Implementa un sistema de trailing stop dinámico para proteger las ganancias obtenidas.</li>
-                            <li>Utiliza stop loss dinámico ajustado a la volatilidad del mercado.</li>
-                        </ul>
-
-                        <h4 class="contract-section-title">3. ALCANCE DE LAS GARANTÍAS</h4>
-                        <p>EL VENDEDOR establece expresamente que:</p>
-                        <ul>
-                            <li><strong>No ofrece garantías sobre resultados financieros futuros</strong>, ya que el mercado Forex/CFD es altamente volátil y sujeto a factores externos impredecibles.</li>
-                            <li>Los resultados históricos mostrados no son indicativos de rendimientos futuros.</li>
-                            <li>El Software está diseñado para operar con una <strong>probabilidad estadística favorable</strong>, pero no elimina completamente el riesgo de pérdidas.</li>
-                        </ul>
-
-                        <h4 class="contract-section-title">4. DATOS DEL COMPRADOR</h4>
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <label class="form-label">Nombre Completo</label>
-                                <input type="text" class="form-control" id="contractName" required>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Número de Identificación</label>
-                                <input type="text" class="form-control" id="contractId" required>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Teléfono de Contacto</label>
-                                <input type="tel" class="form-control" id="contractPhone" required>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Dirección Completa</label>
-                                <input type="text" class="form-control" id="contractAddress" required>
-                            </div>
-                            <div class="col-md-12">
-                                <label class="form-label">Ciudad/País</label>
-                                <input type="text" class="form-control" id="contractCity" required>
-                            </div>
-                        </div>
-
-                        <div class="form-check mt-4">
-                            <input class="form-check-input" type="checkbox" id="agreeContract" required>
-                            <label class="form-check-label" for="agreeContract">
-                                <strong>DECLARO BAJO JURAMENTO QUE:</strong><br>
-                                1) Comprendo que el software puede permanecer inactivo por largos períodos<br>
-                                2) He recibido demostración del funcionamiento real del sistema<br>
-                                3) Acepto que no se garantizan resultados financieros<br>
-                                4) Autorizo el tratamiento de mis datos según política de privacidad
-                            </label>
-                        </div>
-
-                        <div class="contract-signature mt-4">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <label class="form-label">Firma del Comprador</label>
-                                    <div class="signature-pad">
-                                        <canvas id="signatureCanvas" width="400" height="150"></canvas>
-                                        <button type="button" class="btn btn-outline-dark btn-sm mt-2" id="clearSignature">
-                                            <i class="fas fa-eraser me-1"></i> Limpiar Firma
-                                        </button>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="form-label">Fecha de Aceptación</label>
-                                    <input type="text" class="form-control" id="contractDate" readonly value="">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="text-center mt-4">
-                        <button id="downloadContract" class="btn btn-dark me-2">
-                            <i class="fas fa-file-pdf me-2"></i> Descargar Contrato
-                        </button>
-                        <button id="printContract" class="btn btn-outline-dark">
-                            <i class="fas fa-print me-2"></i> Imprimir Contrato
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Sección de Contacto -->
-    <section id="contact" class="py-5 bg-dark">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-6 mb-4">
-                    <h2 class="fw-bold text-gradient mb-4">Contáctanos</h2>
-                    <p class="mb-4">¿Tienes preguntas antes de comprar? Escríbenos y te responderemos lo antes posible.</p>
-                    
-                    <div class="contact-info">
-                        <div class="contact-item mb-3">
-                            <div class="contact-icon">
-                                <i class="fas fa-envelope"></i>
-                            </div>
-                            <div class="contact-details">
-                                <h5 class="text-gradient">Email</h5>
-                                <p>tradinginteligenteap@gmail.com</p>
-                            </div>
-                        </div>
-                        
-                        <div class="contact-item mb-3">
-                            <div class="contact-icon">
-                                <i class="fab fa-whatsapp"></i>
-                            </div>
-                            <div class="contact-details">
-                                <h5 class="text-gradient">WhatsApp</h5>
-                                <p>+573506194991</p>
-                            </div>
-                        </div>
-                        
-                        <div class="contact-item mb-3">
-                            <div class="contact-icon">
-                                <i class="fab fa-telegram"></i>
-                            </div>
-                            <div class="contact-details">
-                                <h5 class="text-gradient">Telegram</h5>
-                                <p>@TradingInteligente</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="col-lg-6">
-                    <form id="contactForm">
-                        <div class="mb-3">
-                            <label for="name" class="form-label">Nombre</label>
-                            <input type="text" class="form-control" id="name" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="email" class="form-label">Email</label>
-                            <input type="email" class="form-control" id="email" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="subject" class="form-label">Asunto</label>
-                            <select class="form-select" id="subject">
-                                <option value="support">Soporte Técnico</option>
-                                <option value="sales">Consulta de Ventas</option>
-                                <option value="payment">Problemas con Pago</option>
-                                <option value="other">Otro</option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label for="message" class="form-label">Mensaje</label>
-                            <textarea class="form-control" id="message" rows="4" required></textarea>
-                        </div>
-                        <button type="submit" class="btn btn-premium w-100">
-                            <i class="fas fa-paper-plane me-2"></i> Enviar Mensaje
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer Premium -->
-    <footer class="py-4 bg-darker">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-md-6 mb-3 mb-md-0">
-                    <a class="navbar-brand" href="#">
-                        <img src="images/logo.png" alt="Trading Inteligente" height="30" class="me-2">
-                        <span class="text-gradient">Trading</span> Inteligente
-                    </a>
-                    <p class="mb-0 small mt-2 text-light">© 2025 Trading Inteligente. Todos los derechos reservados.</p>
-                </div>
-                <div class="col-md-6 text-md-end">
-                    <a href="#" class="social-icon me-3"><i class="fab fa-telegram"></i></a>
-                    <a href="#" class="social-icon me-3"><i class="fab fa-whatsapp"></i></a>
-                    <a href="#" class="social-icon me-3"><i class="fab fa-instagram"></i></a>
-                    <a href="mailto:tradinginteligenteap@gmail.com" class="social-icon"><i class="fas fa-envelope"></i></a>
-                </div>
-            </div>
-        </div>
-    </footer>
-
-    <!-- Modales -->
-    <!-- Modal de Resultados 1 -->
-    <div class="modal fade" id="result1Modal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content bg-dark">
-                <div class="modal-header border-0">
-                    <h5 class="modal-title text-gradient">Detalles de Prueba 1 - LeidyBot1</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <h4 class="text-gradient">$50 → $1,100</h4>
-                            <p class="text-light">+2,100% en 8 meses</p>
-                            <ul class="result-details">
-                                <li><strong>Período:</strong> Enero - Agosto 2025</li>
-                                <li><strong>Configuración:</strong> Conservadora</li>
-                                <li><strong>Drawdown máximo:</strong> 12.3%</li>
-                                <li><strong>Operaciones:</strong> 27 (3.4/mes)</li>
-                                <li><strong>Porcentaje aciertos:</strong> 74%</li>
-                            </ul>
-                        </div>
-                        <div class="col-md-6">
-                            <img src="images/result1-chart.jpg" class="img-fluid rounded">
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer border-0">
-                    <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">Cerrar</button>
-                </div>
-            </div>
-        </div>
+<!-- RESULTS: atribuidos a LeidyBot1 -->
+<section id="results" class="py-5 bg-soft">
+  <div class="container">
+    <div class="text-center mb-5">
+      <h2 class="fw-bold section-title">📊 RESULTADOS REALES (ENERO - AGOSTO 2025)</h2>
+      <p class="text-muted">Resultados de <strong class="text-gold">LeidyBot1</strong> en pruebas controladas</p>
     </div>
 
-    <!-- Modal de Resultados 2 -->
-    <div class="modal fade" id="result2Modal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content bg-dark">
-                <div class="modal-header border-0">
-                    <h5 class="modal-title text-gradient">Detalles de Prueba 2 - LeidyBot1</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+    <div class="row g-4 justify-content-center">
+      <div class="col-md-5">
+        <div class="result-card p-4">
+          <h4 class="text-gold">Prueba 1 — LeidyBot1</h4>
+          <h1 class="display-5 fw-bold">$50 → $1,100</h1>
+          <p class="text-success">🔥 +2,100% en 8 meses</p>
+          <p class="small text-muted">Cuenta demo - modo conservador</p>
+        </div>
+      </div>
+      <div class="col-md-5">
+        <div class="result-card p-4">
+          <h4 class="text-gold">Prueba 2 — LeidyBot1</h4>
+          <h1 class="display-5 fw-bold">$250 → $4,500</h1>
+          <p class="text-success">🚀 +1,700% en 8 meses</p>
+          <p class="small text-muted">Cuenta real - configuración estándar</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section id="testimonials" class="py-5">
+  <div class="container">
+    <div class="text-center mb-5">
+      <h2 class="fw-bold text-gold section-title">Testimonios</h2>
+      <p class="text-muted">Lo que dicen nuestros usuarios</p>
+    </div>
+
+    <div id="testimonialsCarousel" class="carousel slide mb-5" data-bs-ride="carousel">
+      <div class="carousel-inner" id="testimonialInner">
+        <div class="carousel-item active">
+          <div class="d-flex gap-3 align-items-center justify-content-center">
+            <div class="testimonial-avatar">C</div>
+            <div class="text-start">
+              <div class="small text-muted">"LeidyBot1 ha transformado mi forma de operar. La gestión de riesgo es excepcional y los resultados son consistentes mes tras mes."</div>
+              <div class="mt-2"><strong>Carlos M.</strong></div>
+            </div>
+          </div>
+        </div>
+        <div class="carousel-item">
+          <div class="d-flex gap-3 align-items-center justify-content-center">
+            <div class="testimonial-avatar">A</div>
+            <div class="text-start">
+              <div class="small text-muted">"Estoy impaciente por probar WilliBot1. Si es la mitad de bueno como LeidyBot1, será una revolución en el trading automatizado."</div>
+              <div class="mt-2"><strong>Ana R.</strong></div>
+            </div>
+          </div>
+        </div>
+        <div class="carousel-item">
+          <div class="d-flex gap-3 align-items-center justify-content-center">
+            <div class="testimonial-avatar">J</div>
+            <div class="text-start">
+              <div class="small text-muted">"Opero con LeidyBot1 en 3 cuentas diferentes con configuraciones distintas. Los resultados son consistentes en todas."</div>
+              <div class="mt-2"><strong>Javier L.</strong></div>
+            </div>
+          </div>
+        </div>
+        <div class="carousel-item">
+          <div class="d-flex gap-3 align-items-center justify-content-center">
+            <div class="testimonial-avatar">L</div>
+            <div class="text-start">
+              <div class="small text-muted">"Invertí $500 en enero y hoy tengo más de $9,000. La mejor decisión financiera que he tomado."</div>
+              <div class="mt-2"><strong>Laura T.</strong></div>
+            </div>
+          </div>
+        </div>
+        <div class="carousel-item">
+          <div class="d-flex gap-3 align-items-center justify-content-center">
+            <div class="testimonial-avatar">M</div>
+            <div class="text-start">
+              <div class="small text-muted">"Llevo 4 meses usando LeidyBot1 y he obtenido un 25% de rentabilidad mensual. Superó todas mis expectativas."</div>
+              <div class="mt-2"><strong>Miguel Ángel</strong></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <button class="carousel-control-prev" type="button" data-bs-target="#testimonialsCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon"></span>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#testimonialsCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon"></span>
+      </button>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-lg-6">
+        <form id="testimonialForm" class="card p-4 h-100">
+          <h5 class="mb-3">Deja tu testimonio</h5>
+          <input id="testName" class="form-control mb-3" placeholder="Tu nombre" required>
+          <textarea id="testMessage" class="form-control mb-3" rows="3" placeholder="Tu testimonio" required></textarea>
+          <div class="text-end">
+            <button class="btn btn-gold" type="submit">Enviar Testimonio</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="col-lg-6">
+        <div class="card p-4 h-100">
+          <h5>Únete al grupo</h5>
+          <p class="small text-muted mb-3">Accede a resultados, soporte y guías exclusivas en nuestro grupo de Telegram.</p>
+          <a href="https://t.me/+wO3kni1c09xkYjcx" target="_blank" class="btn btn-outline-gold">Unirme al Grupo</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing" class="py-5 bg-soft">
+  <div class="container">
+    <div class="text-center mb-5">
+      <h2 class="fw-bold section-title">Precios y Planes</h2>
+      <p class="text-muted">Promociones por tiempo limitado</p>
+    </div>
+
+    <div class="row g-4 justify-content-center">
+      <div class="col-md-5">
+        <div class="card pricing-card p-4 text-center">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h4 class="mb-0">LeidyBot1</h4>
+            <span class="badge bg-danger">Oferta Limitada</span>
+          </div>
+          <div class="price-block mb-3">
+            <div class="small text-muted">Precio normal</div>
+            <div><s>$350</s></div>
+            <h2 class="fw-bold text-gold">$260 <small class="text-muted fw-light">/único</small></h2>
+            <div class="small text-success">Ahorras $90 (25% descuento)</div>
+          </div>
+
+          <ul class="pricing-features">
+            <li>Licencia perpetua</li>
+            <li>Guía de instalación paso a paso</li>
+            <li>Soporte prioritario 3 meses</li>
+            <li>Acceso al grupo privado</li>
+            <li>Actualizaciones gratuitas por 1 año</li>
+          </ul>
+
+          <div class="d-grid">
+            <button class="btn btn-gold btn-lg pulse" data-bs-toggle="modal" data-bs-target="#checkoutModal" data-product="LeidyBot1" data-price="260">
+              <i class="fas fa-shopping-cart me-1"></i> Comprar LeidyBot1
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-5">
+        <div class="card pricing-card p-4 text-center">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h4 class="mb-0">WilliBot1 (Preventa)</h4>
+            <span class="badge bg-warning text-dark">Preventa</span>
+          </div>
+          <div class="price-block mb-3">
+            <h2 class="fw-bold text-gold">$499 <small class="text-muted fw-light">/único</small></h2>
+            <div class="small text-muted">Acceso Beta + Soporte VIP</div>
+          </div>
+          <ul class="pricing-features">
+            <li>Acceso anticipado a la versión beta</li>
+            <li>Sesión personalizada de configuración</li>
+            <li>Soporte VIP prioritario</li>
+            <li>Actualizaciones gratuitas de por vida</li>
+            <li>Acceso a funciones avanzadas exclusivas</li>
+          </ul>
+          <div class="d-grid">
+            <button class="btn btn-outline-gold" data-bs-toggle="modal" data-bs-target="#waitlistModal">
+              Reservar WilliBot1
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="text-center mt-4">
+      <div class="note small text-muted">* Precio normal de LeidyBot1: $350. Descuento válido por tiempo limitado.</div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTRACT (white background, black text) -->
+<section id="contract" class="py-5">
+  <div class="container">
+    <div class="text-center mb-5">
+      <h2 class="fw-bold section-title">Contrato Legal</h2>
+      <p class="text-muted">Lee y descarga el contrato antes de comprar</p>
+    </div>
+
+    <div class="card contract-white p-4">
+      <div class="contract-inner">
+        <h4>1. OBJETO DEL CONTRATO</h4>
+        <p>TRADING INTELIGENTE, en adelante "EL VENDEDOR", celebra el presente contrato de licencia de software con EL COMPRADOR, quien declara haber proporcionado información veraz en el formulario de compra. El objeto del presente contrato es la licencia de uso del software de trading automatizado (en adelante "EL ROBOT"), bajo los términos y condiciones aquí establecidos.</p>
+
+        <h4>2. DERECHOS DE PROPIEDAD INTELECTUAL</h4>
+        <p>EL ROBOT es propiedad intelectual de TRADING INTELIGENTE y está protegido por las leyes de derechos de autor y tratados internacionales. EL COMPRADOR recibe únicamente una licencia de uso limitada, no exclusiva, intransferible y revocable.</p>
+
+        <h4>3. PROHIBICIONES EXPLÍCITAS</h4>
+        <p>Queda estrictamente prohibido:</p>
+        <ul>
+          <li>Realizar ingeniería inversa, descompilación, desensamblado o cualquier intento de derivar el código fuente del software.</li>
+          <li>Modificar, adaptar, traducir o crear trabajos derivados basados en EL ROBOT.</li>
+          <li>Distribuir, sublicenciar, arrendar, alquilar, prestar o transferir EL ROBOT a terceros.</li>
+          <li>Comercializar, revender o redistribuir EL ROBOT de cualquier forma.</li>
+          <li>Utilizar EL ROBOT para proveer servicios de trading a terceros sin autorización expresa.</li>
+        </ul>
+
+        <h4>4. CLAÚSULA DE CONFIDENCIALIDAD</h4>
+        <p>EL COMPRADOR se compromete a mantener la estricta confidencialidad sobre la estrategia, parámetros de configuración, manuales y cualquier información relacionada con EL ROBOT. Esta obligación de confidencialidad permanecerá vigente incluso después de la finalización del presente contrato.</p>
+
+        <h4>5. GARANTÍAS Y LIMITACIONES DE RESPONSABILIDAD</h4>
+        <p>EL VENDEDOR garantiza que EL ROBOT funciona según las especificaciones técnicas descritas en la documentación proporcionada. Sin embargo, EL VENDEDOR no garantiza resultados financieros específicos ni rentabilidad, ya que el mercado financiero es inherentemente riesgoso y está sujeto a factores impredecibles.</p>
+        <p>EL COMPRADOR reconoce y acepta que:</p>
+        <ul>
+          <li>El trading conlleva riesgos financieros significativos y puede resultar en pérdidas.</li>
+          <li>EL ROBOT puede experimentar períodos de pérdidas debido a condiciones adversas del mercado.</li>
+          <li>El desempeño pasado no garantiza resultados futuros.</li>
+          <li>Es responsable de gestionar su capital y asumir los riesgos asociados.</li>
+        </ul>
+
+        <h4>6. DURACIÓN Y TERMINACIÓN</h4>
+        <p>La licencia se concede por tiempo indefinido, pero podrá ser terminada por EL VENDEDOR en caso de incumplimiento de cualquiera de las cláusulas aquí establecidas, sin perjuicio de las acciones legales correspondientes.</p>
+
+        <h4>7. JURISDICCIÓN Y LEY APLICABLE</h4>
+        <p>Este contrato se regirá por las leyes de Colombia. Cualquier disputa surgida de este contrato será resuelta en los tribunales competentes de Bogotá, Colombia.</p>
+
+        <h4>8. ACEPTACIÓN DE TÉRMINOS</h4>
+        <p>Al proceder con la compra, EL COMPRADOR declara haber leído, entendido y aceptado todas las cláusulas aquí establecidas.</p>
+
+        <h5>DATOS DEL COMPRADOR</h5>
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label">Nombre Completo</label>
+            <input id="contractName" class="form-control" placeholder="Nombre completo">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Número de Identificación</label>
+            <input id="contractId" class="form-control" placeholder="Número de identificación">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Teléfono</label>
+            <input id="contractPhone" class="form-control" placeholder="Teléfono">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Dirección</label>
+            <input id="contractAddress" class="form-control" placeholder="Dirección completa">
+          </div>
+          <div class="col-12">
+            <label class="form-label">Ciudad/País</label>
+            <input id="contractCity" class="form-control" placeholder="Ciudad / País">
+          </div>
+        </div>
+
+        <div class="form-check mt-3">
+          <input id="agreeContract" class="form-check-input" type="checkbox">
+          <label class="form-check-label">Acepto los términos del contrato y reconozco que he leído y entendido todas las cláusulas</label>
+        </div>
+
+        <div class="row mt-3 g-3 align-items-center">
+          <div class="col-md-6">
+            <label class="form-label">Firma del Comprador</label>
+            <div class="signature-pad bg-light p-2">
+              <canvas id="signatureCanvas" width="600" height="150" style="border:1px dashed #ccc;"></canvas>
+              <div class="mt-2 d-flex gap-2">
+                <button id="clearSignature" class="btn btn-sm btn-outline-secondary">Limpiar</button>
+                <button id="downloadContractBtn" class="btn btn-sm btn-gold ms-auto">Descargar Contrato (PDF)</button>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Fecha de Aceptación</label>
+            <input id="contractDate" class="form-control" readonly>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CHECKOUT MODAL (PAYMENT) -->
+<div class="modal fade" id="checkoutModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content bg-dark text-light">
+      <div class="modal-header border-0">
+        <h5 class="modal-title text-gold">Proceso de Compra</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row g-3">
+          <div class="col-md-6">
+            <h6>Producto: <span id="modalProductName">LeidyBot1</span></h6>
+            <h6>Precio: <span id="modalProductPrice" class="text-gold">$260</span></h6>
+
+            <form id="paymentForm">
+              <div class="mb-2">
+                <input id="userName" class="form-control" placeholder="Nombre completo" required>
+              </div>
+              <div class="mb-2">
+                <input id="userEmail" type="email" class="form-control" placeholder="Email" required>
+              </div>
+              <div class="mb-2">
+                <input id="userPhone" class="form-control" placeholder="Teléfono">
+              </div>
+              <div class="form-check mb-2">
+                <input id="agreeTermsModal" class="form-check-input" type="checkbox">
+                <label class="form-check-label">Acepto el <a href="#contract" class="text-gold">contrato de compra</a></label>
+              </div>
+            </form>
+          </div>
+
+          <div class="col-md-6">
+            <div class="payment-methods p-3">
+              <h6 class="text-gold">Método de Pago</h6>
+
+              <div class="form-check mt-2">
+                <input class="form-check-input" type="radio" name="paymentMethod" id="paypalMethod" value="paypal" checked>
+                <label class="form-check-label" for="paypalMethod"><i class="fab fa-paypal me-2"></i> PayPal</label>
+              </div>
+
+              <div class="form-check mt-2">
+                <input class="form-check-input" type="radio" name="paymentMethod" id="bankMethod" value="bank">
+                <label class="form-check-label" for="bankMethod"><i class="fas fa-university me-2"></i> Transferencia Bancaria</label>
+              </div>
+
+              <div id="paypalInfo" class="payment-info mt-3">
+                <div class="small text-muted">Para pagar con PayPal, usa la cuenta:</div>
+                <div class="fw-bold text-gold fs-5 mb-2">@williarvi</div>
+                <div class="d-flex gap-2">
+                  <button id="copyPaypal" class="btn btn-outline-secondary btn-sm"><i class="fas fa-copy me-1"></i> Copiar cuenta</button>
+                  <button id="paypalBtn" class="btn btn-gold btn-sm ms-auto"><i class="fab fa-paypal me-1"></i> Pagar con PayPal</button>
                 </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <h4 class="text-gradient">$250 → $4,500</h4>
-                            <p class="text-light">+1,700% de crecimiento</p>
-                            <ul class="result-details">
-                                <li><strong>Período:</strong> Enero - Agosto 2025</li>
-                                <li><strong>Configuración:</strong> Estándar</li>
-                                <li><strong>Drawdown máximo:</strong> 18.7%</li>
-                                <li><strong>Operaciones:</strong> 35 (4.4/mes)</li>
-                                <li><strong>Porcentaje aciertos:</strong> 68%</li>
-                            </ul>
-                        </div>
-                        <div class="col-md-6">
-                            <img src="images/result2-chart.jpg" class="img-fluid rounded">
+                <div class="small text-muted mt-2">Al hacer clic se generarán factura y contrato (PDF) y luego serás redirigido a PayPal.</div>
+              </div>
+
+              <div id="bankInfo" class="payment-info mt-3" style="display:none;">
+                <div class="small text-muted">Realiza la transferencia a nuestra cuenta NU (envía comprobante):</div>
+                <div class="account-box text-center my-3 p-2">
+                  <div class="small">Cuenta de Ahorros NU</div>
+                  <div class="fw-bold text-gold fs-4">@WAV687</div>
+                </div>
+                <div class="d-flex gap-2">
+                  <button id="copyBankKey" class="btn btn-outline-secondary btn-sm"><i class="fas fa-copy me-1"></i> Copiar llave</button>
+                  <button id="confirmBankPayment" class="btn btn-gold btn-sm ms-auto"><i class="fas fa-check-circle me-1"></i> Confirmar Pago (Descargar documentos)</button>
+                </div>
+                <div class="small text-muted mt-2">Al confirmar se descargarán factura y contrato (PDF).</div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer border-0">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- WAITLIST MODAL -->
+<div class="modal fade" id="waitlistModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content bg-dark text-light">
+      <div class="modal-header border-0">
+        <h5 class="modal-title text-gold">Lista de Espera - WilliBot1</h5>
+        <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <form id="waitlistForm">
+          <input id="waitlistName" class="form-control mb-2" placeholder="Nombre">
+          <input id="waitlistEmail" class="form-control mb-2" placeholder="Email" type="email">
+          <input id="waitlistPhone" class="form-control mb-2" placeholder="WhatsApp">
+          <div class="form-check mb-2">
+            <input id="waitlistUpdates" class="form-check-input" type="checkbox">
+            <label class="form-check-label">Quiero recibir actualizaciones</label>
+          </div>
+          <button class="btn btn-gold w-100" type="submit">Unirme</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CONTACT / FOOTER -->
+<footer class="py-4 footer-dark">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-md-6">
+        <div class="mb-2"><strong>Trading Inteligente</strong> © 2025</div>
+        <div class="small text-muted">Email: tradinginteligenteap@gmail.com &nbsp;|&nbsp; WhatsApp: +57 3506194991 &nbsp;|&nbsp; PayPal: @williarvi</div>
+      </div>
+      <div class="col-md-6 text-md-end">
+        <a href="#" class="me-3"><i class="fab fa-telegram"></i></a>
+        <a href="#" class="me-3"><i class="fab fa-whatsapp"></i></a>
+        <a href="mailto:tradinginteligenteap@gmail.com"><i class="fas fa-envelope"></i></a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- Bootstrap JS bundle -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Local script -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // --- NAVBAR SCROLL EFFECT ---
+        const navbar = document.querySelector('.nav-gold');
+        window.addEventListener('scroll', function() {
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // --- SIGNATURE PAD SETUP ---
+        const canvas = document.getElementById('signatureCanvas');
+        let signaturePad;
+        
+        if (canvas) {
+            // Adjust canvas for high DPI displays
+            const ratio = Math.max(window.devicePixelRatio || 1, 1);
+            canvas.width = canvas.offsetWidth * ratio;
+            canvas.height = canvas.offsetHeight * ratio;
+            canvas.getContext("2d").scale(ratio, ratio);
+            
+            signaturePad = new SignaturePad(canvas, {
+                backgroundColor: 'rgba(255, 255, 255, 0)',
+                penColor: 'rgb(0, 0, 0)',
+                minWidth: 1,
+                maxWidth: 3,
+            });
+            
+            document.getElementById('clearSignature')?.addEventListener('click', () => {
+                signaturePad.clear();
+            });
+            
+            // Make signature pad responsive
+            window.addEventListener('resize', function() {
+                const ratio = Math.max(window.devicePixelRatio || 1, 1);
+                canvas.width = canvas.offsetWidth * ratio;
+                canvas.height = canvas.offsetHeight * ratio;
+                canvas.getContext("2d").scale(ratio, ratio);
+                
+                // Reapply the signature if it exists
+                if (!signaturePad.isEmpty()) {
+                    const data = signaturePad.toData();
+                    signaturePad.clear();
+                    signaturePad.fromData(data);
+                }
+            });
+        }
+
+        // --- SET CONTRACT DATE ---
+        const contractDateInput = document.getElementById('contractDate');
+        if (contractDateInput) {
+            contractDateInput.value = new Date().toLocaleDateString('es-ES', { 
+                day: '2-digit', 
+                month: '2-digit', 
+                year: 'numeric' 
+            });
+        }
+
+        // --- PAYMENT MODAL SETUP ---
+        const checkoutModalEl = document.getElementById('checkoutModal');
+        if (checkoutModalEl) {
+            checkoutModalEl.addEventListener('show.bs.modal', function(event) {
+                const button = event.relatedTarget;
+                const product = button?.getAttribute('data-product') || 'LeidyBot1';
+                const price = button?.getAttribute('data-price') || '260';
+                document.getElementById('modalProductName').textContent = product;
+                document.getElementById('modalProductPrice').textContent = `$${price}`;
+                
+                // Reset form when modal opens
+                document.getElementById('userName').value = '';
+                document.getElementById('userEmail').value = '';
+                document.getElementById('userPhone').value = '';
+                document.getElementById('agreeTermsModal').checked = false;
+            });
+        }
+
+        // --- TOGGLE PAYMENT INFO ---
+        const paymentRadios = document.querySelectorAll('input[name="paymentMethod"]');
+        function updatePaymentInfo() {
+            const selected = document.querySelector('input[name="paymentMethod"]:checked')?.value;
+            document.getElementById('paypalInfo').style.display = selected === 'paypal' ? 'block' : 'none';
+            document.getElementById('bankInfo').style.display = selected === 'bank' ? 'block' : 'none';
+        }
+        paymentRadios.forEach(r => r.addEventListener('change', updatePaymentInfo));
+        updatePaymentInfo();
+
+        // --- COPY HELPERS ---
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                showAlert('¡Copiado al portapapeles!', 'success');
+            }).catch(() => {
+                showAlert('Error al copiar. Por favor, copia manualmente.', 'danger');
+            });
+        }
+        
+        document.getElementById('copyPaypal')?.addEventListener('click', () => copyToClipboard('@williarvi'));
+        document.getElementById('copyBankKey')?.addEventListener('click', () => copyToClipboard('@WAV687'));
+
+        // --- VALIDATION & UTILITIES ---
+        function validateEmail(email) {
+            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        }
+        
+        function showAlert(message, type = 'success') {
+            // Create alert element
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
+            alertDiv.style.top = '20px';
+            alertDiv.style.right = '20px';
+            alertDiv.style.zIndex = '9999';
+            alertDiv.style.minWidth = '300px';
+            alertDiv.role = 'alert';
+            alertDiv.innerHTML = `
+                <div class="d-flex align-items-center">
+                    <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'} me-2"></i>
+                    <div>${message}</div>
+                    <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            `;
+            
+            // Add to body
+            document.body.appendChild(alertDiv);
+            
+            // Auto remove after 5 seconds
+            setTimeout(() => {
+                if (alertDiv.parentNode) {
+                    bootstrap.Alert.getOrCreateInstance(alertDiv).close();
+                }
+            }, 5000);
+        }
+
+        // --- PDF GENERATION (Contract & Invoice) ---
+        function generateContractPDFBlob(userData, productData) {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            // Add header
+            doc.setFillColor(5, 5, 5);
+            doc.rect(0, 0, 210, 40, 'F');
+            
+            // Add title
+            doc.setTextColor(255, 215, 0);
+            doc.setFontSize(20);
+            doc.setFont(undefined, 'bold');
+            doc.text('TRADING INTELIGENTE', 105, 20, { align: 'center' });
+            
+            doc.setTextColor(0, 0, 0);
+            doc.setFontSize(16);
+            doc.text('CONTRATO DE LICENCIA DE SOFTWARE', 105, 30, { align: 'center' });
+            
+            // Seller info
+            doc.setFontSize(11);
+            doc.setTextColor(100, 100, 100);
+            doc.text('Datos del Vendedor:', 14, 50);
+            doc.setTextColor(0, 0, 0);
+            doc.text('Trading Inteligente', 14, 56);
+            doc.text('Email: tradinginteligenteap@gmail.com', 14, 62);
+            doc.text('Teléfono: +57 3506194991', 14, 68);
+            
+            // Buyer info
+            doc.setTextColor(100, 100, 100);
+            doc.text('Datos del Comprador:', 14, 80);
+            doc.setTextColor(0, 0, 0);
+            doc.text(`Nombre: ${userData.name || 'No proporcionado'}`, 14, 86);
+            doc.text(`Identificación: ${userData.id || 'No proporcionada'}`, 14, 92);
+            doc.text(`Email: ${userData.email || 'No proporcionado'}`, 14, 98);
+            doc.text(`Teléfono: ${userData.phone || 'No proporcionado'}`, 14, 104);
+            doc.text(`Dirección: ${userData.address || 'No proporcionada'}`, 14, 110);
+            doc.text(`Fecha: ${userData.date || new Date().toLocaleDateString('es-ES')}`, 14, 116);
+            
+            // Contract terms
+            doc.setTextColor(100, 100, 100);
+            doc.text('1. OBJETO DEL CONTRATO', 14, 132);
+            doc.setTextColor(0, 0, 0);
+            
+            const terms = [
+                'El objeto del presente contrato es la licencia de uso del software de trading',
+                'automatizado bajo los términos y condiciones aquí establecidos. El VENDEDOR',
+                'garantiza que el software funciona según las especificaciones técnicas descritas',
+                'pero no garantiza resultados financieros específicos debido a la naturaleza',
+                'impredecible de los mercados financieros.'
+            ];
+            
+            let y = 138;
+            terms.forEach(line => { 
+                doc.text(line, 14, y, { maxWidth: 180 }); 
+                y += 6; 
+            });
+            
+            // Add signature if available
+            if (userData.signature) {
+                try {
+                    doc.addImage(userData.signature, 'PNG', 14, y + 10, 60, 30);
+                    doc.text('Firma del Comprador', 14, y + 45);
+                } catch (e) {
+                    console.error('Error adding signature image:', e);
+                }
+            }
+            
+            // Add footer
+            doc.setFontSize(10);
+            doc.setTextColor(150, 150, 150);
+            doc.text('Documento generado automáticamente por Trading Inteligente', 105, 280, { align: 'center' });
+            
+            // Return blob
+            return doc.output('blob');
+        }
+
+        function generateInvoicePDFBlob(userData, productData, paymentData) {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            // Add header
+            doc.setFillColor(5, 5, 5);
+            doc.rect(0, 0, 210, 40, 'F');
+            
+            // Add title
+            doc.setTextColor(255, 215, 0);
+            doc.setFontSize(20);
+            doc.setFont(undefined, 'bold');
+            doc.text('TRADING INTELIGENTE', 105, 20, { align: 'center' });
+            
+            doc.setTextColor(0, 0, 0);
+            doc.setFontSize(16);
+            doc.text('FACTURA DE VENTA', 105, 30, { align: 'center' });
+            
+            // Invoice details
+            doc.setFontSize(10);
+            doc.setTextColor(100, 100, 100);
+            const invoiceNumber = Math.floor(Math.random() * 900000) + 100000;
+            doc.text(`Factura No: ${invoiceNumber}`, 14, 50);
+            doc.text(`Fecha: ${userData.date || new Date().toLocaleDateString('es-ES')}`, 14, 56);
+            
+            // Seller and buyer info
+            doc.text('Vendedor: Trading Inteligente', 14, 66);
+            doc.text('Comprador:', 120, 66);
+            doc.setTextColor(0, 0, 0);
+            doc.text(`${userData.name || 'No proporcionado'}`, 120, 72);
+            
+            // Product details
+            doc.setTextColor(100, 100, 100);
+            doc.text('Descripción', 14, 90);
+            doc.setTextColor(0, 0, 0);
+            doc.text(productData.name, 14, 96);
+            doc.text(`$${productData.price} USD`, 180, 96, { align: 'right' });
+            
+            // Total
+            doc.line(14, 110, 196, 110);
+            doc.setTextColor(100, 100, 100);
+            doc.text('Total:', 150, 120, { align: 'right' });
+            doc.setTextColor(0, 0, 0);
+            doc.setFont(undefined, 'bold');
+            doc.text(`$${productData.price} USD`, 180, 120, { align: 'right' });
+            
+            // Payment info
+            doc.setFont(undefined, 'normal');
+            doc.setTextColor(100, 100, 100);
+            doc.text(`Método de pago: ${paymentData.method}`, 14, 136);
+            doc.text(`Referencia: ${paymentData.reference}`, 14, 142);
+            
+            // Add footer
+            doc.setFontSize(10);
+            doc.setTextColor(150, 150, 150);
+            doc.text('Documento generado automáticamente por Trading Inteligente', 105, 280, { align: 'center' });
+            
+            return doc.output('blob');
+        }
+
+        // Helper to force download blob
+        function downloadBlob(blob, filename) {
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        }
+
+        // Collect user data
+        function collectUserDataFromPayment() {
+            const name = document.getElementById('userName')?.value || document.getElementById('contractName')?.value || '';
+            const email = document.getElementById('userEmail')?.value || '';
+            const phone = document.getElementById('userPhone')?.value || document.getElementById('contractPhone')?.value || '';
+            const address = document.getElementById('contractAddress')?.value || '';
+            const id = document.getElementById('contractId')?.value || '';
+            const signature = signaturePad && !signaturePad.isEmpty() ? signaturePad.toDataURL('image/png') : null;
+            
+            return {
+                name, email, phone, address, id,
+                date: new Date().toLocaleDateString('es-ES'),
+                signature
+            };
+        }
+
+        // --- PAYPAL FLOW ---
+        document.getElementById('paypalBtn')?.addEventListener('click', function() {
+            const name = document.getElementById('userName')?.value;
+            const email = document.getElementById('userEmail')?.value;
+            const agree = document.getElementById('agreeTermsModal')?.checked;
+
+            if (!name || !email || !agree) {
+                showAlert('Completa nombre, email y acepta el contrato antes de continuar', 'danger');
+                return;
+            }
+            if (!validateEmail(email)) {
+                showAlert('Por favor, introduce un email válido', 'danger');
+                return;
+            }
+
+            const productName = document.getElementById('modalProductName').textContent || 'LeidyBot1';
+            const productPrice = (document.getElementById('modalProductPrice').textContent || '$260').replace('$', '').trim();
+
+            const userData = collectUserDataFromPayment();
+            const productData = { name: productName, price: productPrice };
+            const paymentData = { method: 'PayPal', reference: '@williarvi', date: userData.date };
+
+            // Generate PDFs
+            const contractBlob = generateContractPDFBlob(userData, productData);
+            const invoiceBlob = generateInvoicePDFBlob(userData, productData, paymentData);
+
+            // Download both
+            downloadBlob(contractBlob, `Contrato_${productName}_${userData.name.replace(/\s+/g, '_')}.pdf`);
+            downloadBlob(invoiceBlob, `Factura_${productName}_${userData.name.replace(/\s+/g, '_')}.pdf`);
+
+            showAlert('Factura y contrato generados. Serás redirigido a PayPal.', 'success');
+
+            // Redirect to PayPal after a short delay
+            setTimeout(() => {
+                window.open('https://www.paypal.com/co/home', '_blank');
+                
+                // Close modal
+                const modal = bootstrap.Modal.getInstance(document.getElementById('checkoutModal'));
+                if (modal) modal.hide();
+                
+                // Clear form fields
+                document.getElementById('userName').value = '';
+                document.getElementById('userEmail').value = '';
+                document.getElementById('userPhone').value = '';
+                document.getElementById('agreeTermsModal').checked = false;
+                
+                if (signaturePad) {
+                    signaturePad.clear();
+                }
+            }, 1500);
+        });
+
+        // --- BANK FLOW ---
+        document.getElementById('confirmBankPayment')?.addEventListener('click', function() {
+            const name = document.getElementById('userName')?.value;
+            const email = document.getElementById('userEmail')?.value;
+            const agree = document.getElementById('agreeTermsModal')?.checked;
+
+            if (!name || !email || !agree) {
+                showAlert('Completa nombre, email y acepta el contrato antes de confirmar', 'danger');
+                return;
+            }
+            if (!validateEmail(email)) {
+                showAlert('Por favor, introduce un email válido', 'danger');
+                return;
+            }
+
+            const productName = document.getElementById('modalProductName').textContent || 'LeidyBot1';
+            const productPrice = (document.getElementById('modalProductPrice').textContent || '$260').replace('$', '').trim();
+
+            const userData = collectUserDataFromPayment();
+            const productData = { name: productName, price: productPrice };
+            const paymentData = { method: 'Transferencia Bancaria', reference: '@WAV687', date: userData.date };
+
+            // Generate PDFs
+            const contractBlob = generateContractPDFBlob(userData, productData);
+            const invoiceBlob = generateInvoicePDFBlob(userData, productData, paymentData);
+
+            // Download both
+            downloadBlob(contractBlob, `Contrato_${productName}_${userData.name.replace(/\s+/g, '_')}.pdf`);
+            downloadBlob(invoiceBlob, `Factura_${productName}_${userData.name.replace(/\s+/g, '_')}.pdf`);
+
+            showAlert('Documentos descargados. Realiza la transferencia a la cuenta NU (llave @WAV687) y envía el comprobante.', 'success');
+
+            // Close modal
+            const modal = bootstrap.Modal.getInstance(document.getElementById('checkoutModal'));
+            if (modal) modal.hide();
+        });
+
+        // --- DOWNLOAD CONTRACT BUTTON (contract section) ---
+        document.getElementById('downloadContractBtn')?.addEventListener('click', function() {
+            if (!document.getElementById('agreeContract')?.checked) {
+                showAlert('Debes aceptar el contrato antes de descargar.', 'danger');
+                return;
+            }
+            
+            const productName = 'LeidyBot1';
+            const productPrice = '260';
+            const userData = {
+                name: document.getElementById('contractName')?.value || '',
+                id: document.getElementById('contractId')?.value || '',
+                email: '',
+                phone: document.getElementById('contractPhone')?.value || '',
+                address: document.getElementById('contractAddress')?.value || '',
+                date: new Date().toLocaleDateString('es-ES'),
+                signature: signaturePad && !signaturePad.isEmpty() ? signaturePad.toDataURL('image/png') : null
+            };
+            
+            const productData = { name: productName, price: productPrice };
+            const contractBlob = generateContractPDFBlob(userData, productData);
+            
+            downloadBlob(contractBlob, `Contrato_${productName}_${userData.name.replace(/\s+/g, '_')}.pdf`);
+            showAlert('Contrato descargado correctamente', 'success');
+        });
+
+        // --- WAITLIST FORM ---
+        const waitlistForm = document.getElementById('waitlistForm');
+        if (waitlistForm) {
+            waitlistForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const email = document.getElementById('waitlistEmail')?.value;
+                
+                if (!email || !validateEmail(email)) { 
+                    showAlert('Introduce un email válido', 'danger'); 
+                    return; 
+                }
+                
+                showAlert('¡Gracias por unirte a la lista de espera! Te notificaremos cuando WilliBot1 esté disponible.', 'success');
+                waitlistForm.reset();
+                
+                setTimeout(() => { 
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('waitlistModal')); 
+                    if (modal) modal.hide(); 
+                }, 1500);
+            });
+        }
+
+        // --- TESTIMONIALS (localStorage) ---
+        const testimonialInner = document.getElementById('testimonialInner');
+        const initialTestimonials = [
+            { name: 'Carlos M.', text: '"LeidyBot1 ha transformado mi forma de operar. La gestión de riesgo es excepcional y los resultados son consistentes mes tras mes."' },
+            { name: 'Ana R.', text: '"Estoy impaciente por probar WilliBot1. Si es la mitad de bueno como LeidyBot1, será una revolución en el trading automatizado."' },
+            { name: 'Javier L.', text: '"Opero con LeidyBot1 en 3 cuentas diferentes con configuraciones distintas. Los resultados son consistentes en todas."' },
+            { name: 'Laura T.', text: '"Invertí $500 en enero y hoy tengo más de $9,000. La mejor decisión financiera que he tomado."' },
+            { name: 'Miguel Ángel', text: '"Llevo 4 meses usando LeidyBot1 y he obtenido un 25% de rentabilidad mensual. Superó todas mis expectativas."' },
+            { name: 'Sofía R.', text: '"El soporte es excelente. Me ayudaron a configurar todo y resolver mis dudas rápidamente."' },
+            { name: 'Ricardo P.', text: '"Después de probar varios EAs, finalmente encontré uno que realmente funciona. LeidyBot1 es increíble."' },
+            { name: 'Elena C.', text: '"La gestión de riesgo es lo que más me gusta. Me siento seguro incluso en mercados volátiles."' },
+            { name: 'Diego M.', text: '"Empecé con $200 y en 6 meses tengo $2,500. Los resultados hablan por sí solos."' },
+            { name: 'Carolina V.', text: '"Recomiendo LeidyBot1 a todos mis amigos. Es transparente y cumple lo que promete."' }
+        ];
+        
+        let testimonials = JSON.parse(localStorage.getItem('ti_testimonials')) || initialTestimonials;
+
+        function renderTestimonials(list) {
+            if (!testimonialInner) return;
+            
+            testimonialInner.innerHTML = '';
+            list.forEach((t, idx) => {
+                const item = document.createElement('div');
+                item.className = `carousel-item ${idx === 0 ? 'active' : ''}`;
+                item.innerHTML = `
+                    <div class="d-flex gap-3 align-items-center justify-content-center">
+                        <div class="testimonial-avatar">${t.name[0]}</div>
+                        <div class="text-start">
+                            <div class="small text-muted">${t.text}</div>
+                            <div class="mt-2"><strong>${t.name}</strong></div>
                         </div>
                     </div>
-                </div>
-                <div class="modal-footer border-0">
-                    <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">Cerrar</button>
-                </div>
-            </div>
-        </div>
-    </div>
+                `;
+                testimonialInner.appendChild(item);
+            });
+        }
+        
+        renderTestimonials(testimonials);
 
-    <!-- Modal de Pago -->
-    <div class="modal fade" id="checkoutModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content bg-dark">
-                <div class="modal-header border-0">
-                    <h5 class="modal-title text-gradient">Proceso de Compra</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="purchase-summary">
-                                <h6 class="text-gradient">Resumen de Compra</h6>
-                                <div class="summary-item">
-                                    <span>Producto:</span>
-                                    <span class="text-gradient" id="modalProductName">LeidyBot1</span>
-                                </div>
-                                <div class="summary-item">
-                                    <span>Precio:</span>
-                                    <span class="text-gradient" id="modalProductPrice">$260 USD</span>
-                                </div>
-                                <div class="summary-item">
-                                    <span>Descuento:</span>
-                                    <span class="text-success">-$90 USD (26%)</span>
-                                </div>
-                                <div class="summary-item total">
-                                    <span>Total a pagar:</span>
-                                    <span class="text-gradient fw-bold">$260 USD</span>
-                                </div>
-                            </div>
-                            
-                            <form id="paymentForm" class="mt-4">
-                                <div class="mb-3">
-                                    <label for="userName" class="form-label">Nombre Completo</label>
-                                    <input type="text" class="form-control" id="userName" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="userEmail" class="form-label">Email</label>
-                                    <input type="email" class="form-control" id="userEmail" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="userPhone" class="form-label">Teléfono</label>
-                                    <input type="tel" class="form-control" id="userPhone" required>
-                                </div>
-                            </form>
-                        </div>
-                        
-                        <div class="col-md-6">
-                            <div class="payment-options">
-                                <h6 class="text-gradient mb-3">Método de Pago</h6>
-                                
-                                <div class="payment-method-card active" data-method="paypal">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="paymentMethod" id="paypalMethod" value="paypal" checked>
-                                        <label class="form-check-label" for="paypalMethod">
-                                            <i class="fab fa-paypal me-2"></i> PayPal
-                                        </label>
-                                    </div>
-                                    <div class="payment-info">
-                                        <p class="small text-light">Pago seguro a través de PayPal</p>
-                                    </div>
-                                </div>
-                                
-                                <div class="payment-method-card" data-method="bank">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="paymentMethod" id="bankMethod" value="bank">
-                                        <label class="form-check-label" for="bankMethod">
-                                            <i class="fas fa-university me-2"></i> Transferencia Bancaria
-                                        </label>
-                                    </div>
-                                    <div class="payment-info">
-                                        <p class="small text-light">Transferencia a cuenta NU</p>
-                                    </div>
-                                </div>
-                                
-                                <div id="paypalSection" class="payment-section">
-                                    <div class="alert alert-premium">
-                                        <p class="mb-1">Serás redirigido a PayPal para completar el pago</p>
-                                        <p class="mb-0"><strong>Cuenta:</strong> @williarvi</p>
-                                    </div>
-                                    <button id="payWithPaypal" class="btn btn-premium w-100">
-                                        <i class="fab fa-paypal me-2"></i> Pagar con PayPal
-                                    </button>
-                                </div>
-                                
-                                <div id="bankSection" class="payment-section" style="display: none;">
-                                    <div class="alert alert-premium">
-                                        <h6 class="text-gradient mb-2">Datos para Transferencia</h6>
-                                        <p class="mb-1"><strong>Banco:</strong> NU</p>
-                                        <p class="mb-1"><strong>Tipo:</strong> Cuenta de Ahorros</p>
-                                        <p class="mb-1"><strong>Llave:</strong> @WAV687</p>
-                                        <p class="mb-0"><strong>Beneficiario:</strong> Trading Inteligente</p>
-                                    </div>
-                                    <button id="copyBankDetails" class="btn btn-outline-light w-100 mb-2">
-                                        <i class="fas fa-copy me-2"></i> Copiar Datos Bancarios
-                                    </button>
-                                    <button id="confirmBankPayment" class="btn btn-premium w-100">
-                                        <i class="fas fa-check-circle me-2"></i> Confirmar Pago Bancario
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+        // Testimonial form submission
+        const testimonialForm = document.getElementById('testimonialForm');
+        if (testimonialForm) {
+            testimonialForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const name = document.getElementById('testName')?.value.trim();
+                const message = document.getElementById('testMessage')?.value.trim();
+                
+                if (!name || !message) { 
+                    showAlert('Completa nombre y testimonio', 'danger'); 
+                    return; 
+                }
+                
+                testimonials.unshift({ name: name, text: `"${message}"` });
+                
+                // Keep only the latest 10 testimonials
+                if (testimonials.length > 10) {
+                    testimonials = testimonials.slice(0, 10);
+                }
+                
+                localStorage.setItem('ti_testimonials', JSON.stringify(testimonials));
+                renderTestimonials(testimonials);
+                testimonialForm.reset();
+                
+                showAlert('¡Gracias por tu testimonio! Se ha añadido al carrusel.', 'success');
+            });
+        }
 
-    <!-- Modal Imagen -->
-    <div class="modal fade" id="imageModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content bg-dark">
-                <div class="modal-header border-0">
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body text-center">
-                    <img src="" id="modalImage" class="img-fluid rounded" style="max-height: 70vh;">
-                </div>
-            </div>
-        </div>
-    </div>
+        // Initialize tooltips
+        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="js/script.js"></script>
+        // Add animation to elements on scroll
+        function animateOnScroll() {
+            const elements = document.querySelectorAll('.card, .result-card, .pricing-card');
+            
+            elements.forEach(element => {
+                const position = element.getBoundingClientRect().top;
+                const screenPosition = window.innerHeight / 1.3;
+                
+                if (position < screenPosition) {
+                    element.style.opacity = 1;
+                    element.style.transform = 'translateY(0)';
+                }
+            });
+        }
+        
+        // Set initial state for animation
+        const animatedElements = document.querySelectorAll('.card, .result-card, .pricing-card');
+        animatedElements.forEach(el => {
+            el.style.opacity = 0;
+            el.style.transform = 'translateY(20px)';
+            el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+        });
+        
+        // Run on load and scroll
+        window.addEventListener('load', animateOnScroll);
+        window.addEventListener('scroll', animateOnScroll);
+    });
+</script>
+
 </body>
 </html>
