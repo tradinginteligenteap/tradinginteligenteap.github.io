@@ -69,7 +69,7 @@ body {
 
 .brand-sub {
   font-size: 0.75rem;
-  color: var(--muted);
+  color: var(--text-light);
   letter-spacing: 1px;
 }
 
@@ -78,7 +78,7 @@ body {
   padding: 0.5rem 1.2rem;
   font-weight: 600;
   transition: all 0.3s ease;
-  color: var(--text-light);
+  color: var(--text-light) !important;
 }
 
 .navbar-nav .nav-link::after {
@@ -98,7 +98,7 @@ body {
 }
 
 .navbar-nav .nav-link:hover {
-  color: var(--gold);
+  color: var(--gold) !important;
 }
 
 /* HERO mejorado */
@@ -128,11 +128,12 @@ body {
   margin-bottom: 1.5rem;
   text-shadow: 0 2px 10px rgba(0,0,0,0.7);
   letter-spacing: -0.5px;
+  color: var(--text-light);
 }
 
 .hero-section .lead {
   font-size: 1.35rem;
-  color: var(--text-lighter);
+  color: var(--text-light);
   margin-bottom: 2.5rem;
   max-width: 700px;
   margin-left: auto;
@@ -182,6 +183,7 @@ body {
 .btn-cta:hover {
   transform: translateY(-5px);
   box-shadow: 0 15px 35px rgba(255,215,0,0.3);
+  color: #000;
 }
 
 .btn-gold {
@@ -198,6 +200,7 @@ body {
 .btn-gold:hover {
   transform: translateY(-3px);
   box-shadow: 0 8px 20px rgba(255,215,0,0.25);
+  color: #000;
 }
 
 .btn-outline-gold {
@@ -231,11 +234,12 @@ body {
   border-color: rgba(255,215,0,0.4);
   transform: translateY(-3px);
   box-shadow: 0 5px 15px rgba(255,215,0,0.1);
+  color: #fff;
 }
 
 /* Cards & product mejorados */
 .card {
-  background: linear-gradient(135deg, var(--card-dark), var(--card-darker);
+  background: linear-gradient(135deg, var(--card-dark), var(--card-darker));
   border-radius: 16px;
   border: 1px solid rgba(255,215,0,0.1);
   overflow: hidden;
@@ -436,7 +440,7 @@ body {
 }
 
 .note {
-  color: var(--muted);
+  color: var(--text-light);
   font-size: 0.95rem;
 }
 
@@ -451,6 +455,7 @@ body {
   position: relative;
   padding-left: 2.2rem;
   font-size: 1rem;
+  color: var(--text-light);
 }
 
 .pricing-features li::before {
@@ -573,7 +578,7 @@ body {
 /* Footer mejorado */
 .footer-dark {
   background: linear-gradient(135deg, #030303, #050505);
-  color: var(--muted);
+  color: var(--text-light);
   border-top: 1px solid rgba(255,215,0,0.1);
   padding: 3rem 0 1.5rem;
   position: relative;
@@ -591,7 +596,7 @@ body {
 }
 
 .footer-dark a {
-  color: var(--muted);
+  color: var(--text-light);
   transition: all 0.3s ease;
   font-size: 1.2rem;
 }
@@ -603,7 +608,11 @@ body {
 
 /* Helpers & responsive mejorados */
 .text-muted {
-  color: #bfc3c7 !important;
+  color: #ffffff !important;
+}
+
+.text-white {
+  color: #ffffff !important;
 }
 
 section {
@@ -616,6 +625,7 @@ section {
   text-align: center;
   font-weight: 800;
   font-size: 2.5rem;
+  color: var(--text-light);
 }
 
 .section-title::after {
@@ -632,6 +642,19 @@ section {
   font-weight: 600;
   padding: 0.5rem 1rem;
   border-radius: 50px;
+}
+
+/* Modal improvements */
+.modal-content {
+  border: 1px solid rgba(255,215,0,0.2);
+}
+
+.border-gold {
+  border-color: rgba(255,215,0,0.2) !important;
+}
+
+.btn-close-white {
+  filter: invert(1) grayscale(100%) brightness(200%);
 }
 
 /* Animaciones y efectos */
