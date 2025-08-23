@@ -65,6 +65,16 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
+  // --- RESERVE WILLIBOT1 BUTTON ---
+  const reserveWilliBotBtn = document.getElementById('reserveWilliBot');
+  if (reserveWilliBotBtn) {
+    reserveWilliBotBtn.addEventListener('click', function() {
+      const message = encodeURIComponent('Quiero reservar a Willi Bot 1 antes del lanzamiento');
+      const whatsappUrl = `https://wa.me/573506194991?text=${message}`;
+      window.open(whatsappUrl, '_blank');
+    });
+  }
+
   // --- PAYMENT MODAL SETUP ---
   const checkoutModalEl = document.getElementById('checkoutModal');
   if (checkoutModalEl) {
@@ -83,12 +93,23 @@ document.addEventListener('DOMContentLoaded', function() {
       const userName = document.getElementById('userName');
       const userEmail = document.getElementById('userEmail');
       const userPhone = document.getElementById('userPhone');
+      const userId = document.getElementById('userId');
+      const userCity = document.getElementById('userCity');
       const agreeTermsModal = document.getElementById('agreeTermsModal');
+      const userBank = document.getElementById('userBank');
       
       if (userName) userName.value = '';
       if (userEmail) userEmail.value = '';
       if (userPhone) userPhone.value = '';
+      if (userId) userId.value = '';
+      if (userCity) userCity.value = '';
       if (agreeTermsModal) agreeTermsModal.checked = false;
+      if (userBank) userBank.value = '';
+      
+      // Reset payment method to PayPal
+      const paypalRadio = document.getElementById('paypalRadio');
+      if (paypalRadio) paypalRadio.checked = true;
+      updatePaymentInfo();
     });
   }
 
@@ -98,9 +119,13 @@ document.addEventListener('DOMContentLoaded', function() {
     const selected = document.querySelector('input[name="paymentMethod"]:checked')?.value;
     const paypalInfo = document.getElementById('paypalInfo');
     const bankInfo = document.getElementById('bankInfo');
+    const paypalBtn = document.getElementById('paypalBtn');
+    const confirmBankPaymentBtn = document.getElementById('confirmBankPayment');
     
     if (paypalInfo) paypalInfo.style.display = selected === 'paypal' ? 'block' : 'none';
     if (bankInfo) bankInfo.style.display = selected === 'bank' ? 'block' : 'none';
+    if (paypalBtn) paypalBtn.style.display = selected === 'paypal' ? 'inline-block' : 'none';
+    if (confirmBankPaymentBtn) confirmBankPaymentBtn.style.display = selected === 'bank' ? 'inline-block' : 'none';
   }
   
   if (paymentRadios.length > 0) {
@@ -198,23 +223,25 @@ document.addEventListener('DOMContentLoaded', function() {
     doc.text(`Email: ${userData.email || 'No proporcionado'}`, 14, 98);
     doc.text(`Teléfono: ${userData.phone || 'No proporcionado'}`, 14, 104);
     doc.text(`Dirección: ${userData.address || 'No proporcionada'}`, 14, 110);
-    doc.text(`Fecha: ${userData.date || new Date().toLocaleDateString('es-ES')}`, 14, 116);
+    doc.text(`Ciudad: ${userData.city || 'No proporcionada'}`, 14, 116);
+    doc.text(`Fecha: ${userData.date || new Date().toLocaleDateString('es-ES')}`, 14, 122);
     
     // Contract terms
     doc.setTextColor(100, 100, 100);
-    doc.text('1. OBJETO DEL CONTRATO', 14, 132);
+    doc.text('1. OBJETO DEL CONTRATO', 14, 138);
     doc.setTextColor(0, 0, 0);
     
     const terms = [
-      'El vendedor transfiere al comprador los derechos de uso del software indicado.',
-      'El vendedor no garantiza resultados financieros específicos.',
-      'El comprador entiende que el software puede permanecer inactivo en periodos de riesgo elevado.',
-      'Se aplican los términos y condiciones publicados en el sitio.'
+      'El objeto del presente contrato es la licencia de uso del software de trading',
+      'automatizado bajo los términos y condiciones aquí establecidos. El VENDEDOR',
+      'garantiza que el software funciona según las especificaciones técnicas descritas',
+      'pero no garantiza resultados financieros específicos debido a la naturaleza',
+      'impredecible de los mercados financieros.'
     ];
     
-    let y = 138;
+    let y = 144;
     terms.forEach(line => { 
-      doc.text('- ' + line, 14, y); 
+      doc.text(line, 14, y, { maxWidth: 180 }); 
       y += 6; 
     });
     
@@ -315,15 +342,31 @@ document.addEventListener('DOMContentLoaded', function() {
     const email = document.getElementById('userEmail')?.value || '';
     const phone = document.getElementById('userPhone')?.value || document.getElementById('contractPhone')?.value || '';
     const address = document.getElementById('contractAddress')?.value || '';
-    const id = document.getElementById('contractId')?.value || '';
+    const id = document.getElementById('userId')?.value || document.getElementById('contractId')?.value || '';
+    const city = document.getElementById('userCity')?.value || document.getElementById('contractCity')?.value || '';
     const signature = signaturePad && !signaturePad.isEmpty() ? signaturePad.toDataURL('image/png') : null;
     
     return {
-      name, email, phone, address, id,
+      name, email, phone, address, id, city,
       date: new Date().toLocaleDateString('es-ES'),
       signature
     };
   }
+
+  // --- BANK URLS ---
+  const bankUrls = {
+    'bancolombia': 'https://www.bancolombia.com',
+    'davivienda': 'https://www.davivienda.com',
+    'bbva': 'https://www.bbva.com.co',
+    'banco-bogota': 'https://www.bancodebogota.com',
+    'banco-popular': 'https://www.bancopopular.com.co',
+    'colpatria': 'https://www.colpatria.com',
+    'av-villas': 'https://www.avvillas.com.co',
+    'banco-caja-social': 'https://www.bancocajasocial.com',
+    'nequi': 'https://www.nequi.com.co',
+    'daviplata': 'https://www.daviplata.com',
+    'nu': 'https://nu.com.co'
+  };
 
   // --- PAYPAL FLOW ---
   const paypalBtn = document.getElementById('paypalBtn');
@@ -331,10 +374,13 @@ document.addEventListener('DOMContentLoaded', function() {
     paypalBtn.addEventListener('click', function() {
       const name = document.getElementById('userName')?.value;
       const email = document.getElementById('userEmail')?.value;
+      const phone = document.getElementById('userPhone')?.value;
+      const id = document.getElementById('userId')?.value;
+      const city = document.getElementById('userCity')?.value;
       const agree = document.getElementById('agreeTermsModal')?.checked;
 
-      if (!name || !email || !agree) {
-        showAlert('Completa nombre, email y acepta el contrato antes de continuar', 'danger');
+      if (!name || !email || !phone || !id || !city || !agree) {
+        showAlert('Completa todos los campos y acepta el contrato antes de continuar', 'danger');
         return;
       }
       if (!validateEmail(email)) {
@@ -371,19 +417,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         // Clear form fields
-        const userName = document.getElementById('userName');
-        const userEmail = document.getElementById('userEmail');
-        const userPhone = document.getElementById('userPhone');
-        const agreeTermsModal = document.getElementById('agreeTermsModal');
-        
-        if (userName) userName.value = '';
-        if (userEmail) userEmail.value = '';
-        if (userPhone) userPhone.value = '';
-        if (agreeTermsModal) agreeTermsModal.checked = false;
-        
-        if (signaturePad) {
-          signaturePad.clear();
-        }
+        clearModalForm();
       }, 1500);
     });
   }
@@ -394,10 +428,14 @@ document.addEventListener('DOMContentLoaded', function() {
     confirmBankPaymentBtn.addEventListener('click', function() {
       const name = document.getElementById('userName')?.value;
       const email = document.getElementById('userEmail')?.value;
+      const phone = document.getElementById('userPhone')?.value;
+      const id = document.getElementById('userId')?.value;
+      const city = document.getElementById('userCity')?.value;
       const agree = document.getElementById('agreeTermsModal')?.checked;
+      const userBank = document.getElementById('userBank')?.value;
 
-      if (!name || !email || !agree) {
-        showAlert('Completa nombre, email y acepta el contrato antes de confirmar', 'danger');
+      if (!name || !email || !phone || !id || !city || !agree || !userBank) {
+        showAlert('Completa todos los campos, selecciona tu banco y acepta el contrato antes de confirmar', 'danger');
         return;
       }
       if (!validateEmail(email)) {
@@ -420,15 +458,47 @@ document.addEventListener('DOMContentLoaded', function() {
       downloadBlob(contractBlob, `Contrato_${productName}_${userData.name.replace(/\s+/g, '_')}.pdf`);
       downloadBlob(invoiceBlob, `Factura_${productName}_${userData.name.replace(/\s+/g, '_')}.pdf`);
 
-      showAlert('Documentos descargados. Realiza la transferencia a la cuenta NU (llave @WAV687) y envía el comprobante.', 'success');
+      showAlert('Documentos descargados. Serás redirigido a tu banco para realizar la transferencia.', 'success');
 
-      // Close modal
-      const modalElement = document.getElementById('checkoutModal');
-      if (modalElement) {
-        const modal = bootstrap.Modal.getInstance(modalElement);
-        if (modal) modal.hide();
-      }
+      // Redirect to bank after a short delay
+      setTimeout(() => {
+        const bankUrl = bankUrls[userBank] || 'https://www.google.com/search?q=' + encodeURIComponent(userBank + ' banco colombia');
+        window.open(bankUrl, '_blank');
+        
+        // Close modal
+        const modalElement = document.getElementById('checkoutModal');
+        if (modalElement) {
+          const modal = bootstrap.Modal.getInstance(modalElement);
+          if (modal) modal.hide();
+        }
+        
+        // Clear form fields
+        clearModalForm();
+      }, 1500);
     });
+  }
+
+  // Clear modal form function
+  function clearModalForm() {
+    const userName = document.getElementById('userName');
+    const userEmail = document.getElementById('userEmail');
+    const userPhone = document.getElementById('userPhone');
+    const userId = document.getElementById('userId');
+    const userCity = document.getElementById('userCity');
+    const agreeTermsModal = document.getElementById('agreeTermsModal');
+    const userBank = document.getElementById('userBank');
+    
+    if (userName) userName.value = '';
+    if (userEmail) userEmail.value = '';
+    if (userPhone) userPhone.value = '';
+    if (userId) userId.value = '';
+    if (userCity) userCity.value = '';
+    if (agreeTermsModal) agreeTermsModal.checked = false;
+    if (userBank) userBank.value = '';
+    
+    if (signaturePad) {
+      signaturePad.clear();
+    }
   }
 
   // --- DOWNLOAD CONTRACT BUTTON (contract section) ---
@@ -449,6 +519,7 @@ document.addEventListener('DOMContentLoaded', function() {
         email: '',
         phone: document.getElementById('contractPhone')?.value || '',
         address: document.getElementById('contractAddress')?.value || '',
+        city: document.getElementById('contractCity')?.value || '',
         date: new Date().toLocaleDateString('es-ES'),
         signature: signaturePad && !signaturePad.isEmpty() ? signaturePad.toDataURL('image/png') : null
       };
@@ -486,6 +557,24 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
+  // --- CONTACT FORM ---
+  const contactForm = document.getElementById('contactForm');
+  if (contactForm) {
+    contactForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      showAlert('¡Mensaje enviado correctamente! Te contactaremos pronto.', 'success');
+      contactForm.reset();
+    });
+  }
+
+  // --- IMAGE GALLERY ---
+  window.changeImage = function(mainImageId, newSrc) {
+    const mainImage = document.getElementById(mainImageId);
+    if (mainImage) {
+      mainImage.src = newSrc;
+    }
+  };
+
   // --- TESTIMONIALS (localStorage) ---
   const testimonialInner = document.getElementById('testimonialInner');
   const initialTestimonials = [
@@ -508,8 +597,8 @@ document.addEventListener('DOMContentLoaded', function() {
         <div class="d-flex gap-3 align-items-center justify-content-center">
           <div class="testimonial-avatar">${t.name[0]}</div>
           <div class="text-start">
-            <div class="small text-muted">${t.text}</div>
-            <div class="mt-2"><strong>${t.name}</strong></div>
+            <div class="small text-white">${t.text}</div>
+            <div class="mt-2"><strong class="text-white">${t.name}</strong></div>
           </div>
         </div>
       `;
@@ -544,6 +633,15 @@ document.addEventListener('DOMContentLoaded', function() {
       testimonialForm.reset();
       
       showAlert('¡Gracias por tu testimonio! Se ha añadido al carrusel.', 'success');
+      
+      // Close modal
+      setTimeout(() => {
+        const modalElement = document.getElementById('testimonialModal');
+        if (modalElement) {
+          const modal = bootstrap.Modal.getInstance(modalElement);
+          if (modal) modal.hide();
+        }
+      }, 1500);
     });
   }
 
