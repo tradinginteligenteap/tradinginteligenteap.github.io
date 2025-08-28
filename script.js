@@ -65,16 +65,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  // --- RESERVE WILLIBOT1 BUTTON ---
-  const reserveWilliBotBtn = document.getElementById('reserveWilliBot');
-  if (reserveWilliBotBtn) {
-    reserveWilliBotBtn.addEventListener('click', function() {
-      const message = encodeURIComponent('Quiero reservar a Willi Bot 1 antes del lanzamiento');
-      const whatsappUrl = `https://wa.me/573506194991?text=${message}`;
-      window.open(whatsappUrl, '_blank');
-    });
-  }
-
   // --- PAYMENT MODAL SETUP ---
   const checkoutModalEl = document.getElementById('checkoutModal');
   if (checkoutModalEl) {
@@ -96,7 +86,6 @@ document.addEventListener('DOMContentLoaded', function() {
       const userId = document.getElementById('userId');
       const userCity = document.getElementById('userCity');
       const agreeTermsModal = document.getElementById('agreeTermsModal');
-      const userBank = document.getElementById('userBank');
       
       if (userName) userName.value = '';
       if (userEmail) userEmail.value = '';
@@ -104,10 +93,9 @@ document.addEventListener('DOMContentLoaded', function() {
       if (userId) userId.value = '';
       if (userCity) userCity.value = '';
       if (agreeTermsModal) agreeTermsModal.checked = false;
-      if (userBank) userBank.value = '';
       
       // Reset payment method to PayPal
-      const paypalRadio = document.getElementById('paypalRadio');
+      const paypalRadio = document.getElementById('paypalMethod');
       if (paypalRadio) paypalRadio.checked = true;
       updatePaymentInfo();
     });
@@ -119,13 +107,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const selected = document.querySelector('input[name="paymentMethod"]:checked')?.value;
     const paypalInfo = document.getElementById('paypalInfo');
     const bankInfo = document.getElementById('bankInfo');
-    const paypalBtn = document.getElementById('paypalBtn');
-    const confirmBankPaymentBtn = document.getElementById('confirmBankPayment');
     
     if (paypalInfo) paypalInfo.style.display = selected === 'paypal' ? 'block' : 'none';
     if (bankInfo) bankInfo.style.display = selected === 'bank' ? 'block' : 'none';
-    if (paypalBtn) paypalBtn.style.display = selected === 'paypal' ? 'inline-block' : 'none';
-    if (confirmBankPaymentBtn) confirmBankPaymentBtn.style.display = selected === 'bank' ? 'inline-block' : 'none';
   }
   
   if (paymentRadios.length > 0) {
@@ -180,7 +164,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Auto remove after 5 seconds
     setTimeout(() => {
       if (alertDiv.parentNode) {
-        const bsAlert = new bootstrap.Alert(alertDiv);
+        const bsAlert = bootstrap.Alert.getOrCreateInstance(alertDiv);
         bsAlert.close();
       }
     }, 5000);
@@ -191,11 +175,27 @@ document.addEventListener('DOMContentLoaded', function() {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
     
-    // Add header
+    // Configuración inicial
+    const pageHeight = doc.internal.pageSize.height;
+    const margin = 14;
+    let y = margin;
+    
+    // Función para agregar texto con manejo de saltos de página
+    function addText(text, x, y, maxWidth, lineHeight = 7) {
+      const lines = doc.splitTextToSize(text, maxWidth);
+      if (y + (lines.length * lineHeight) > pageHeight - margin) {
+        doc.addPage();
+        y = margin;
+      }
+      doc.text(lines, x, y);
+      return y + (lines.length * lineHeight);
+    }
+    
+    // Header
     doc.setFillColor(5, 5, 5);
     doc.rect(0, 0, 210, 40, 'F');
     
-    // Add title
+    // Título
     doc.setTextColor(255, 215, 0);
     doc.setFontSize(20);
     doc.setFont(undefined, 'bold');
@@ -205,60 +205,97 @@ document.addEventListener('DOMContentLoaded', function() {
     doc.setFontSize(16);
     doc.text('CONTRATO DE LICENCIA DE SOFTWARE', 105, 30, { align: 'center' });
     
-    // Seller info
+    // Información del vendedor y comprador
+    y = 50;
     doc.setFontSize(11);
     doc.setTextColor(100, 100, 100);
-    doc.text('Datos del Vendedor:', 14, 50);
+    doc.text('Datos del Vendedor:', margin, y);
     doc.setTextColor(0, 0, 0);
-    doc.text('Trading Inteligente', 14, 56);
-    doc.text('Email: tradinginteligenteap@gmail.com', 14, 62);
-    doc.text('Teléfono: +57 3506194991', 14, 68);
+    y = addText('Trading Inteligente', margin, y + 6, 180);
+    y = addText('Email: tradinginteligenteap@gmail.com', margin, y + 2, 180);
+    y = addText('Teléfono: +57 3506194991', margin, y + 2, 180);
     
-    // Buyer info
+    y += 10;
     doc.setTextColor(100, 100, 100);
-    doc.text('Datos del Comprador:', 14, 80);
+    doc.text('Datos del Comprador:', margin, y);
     doc.setTextColor(0, 0, 0);
-    doc.text(`Nombre: ${userData.name || 'No proporcionado'}`, 14, 86);
-    doc.text(`Identificación: ${userData.id || 'No proporcionada'}`, 14, 92);
-    doc.text(`Email: ${userData.email || 'No proporcionado'}`, 14, 98);
-    doc.text(`Teléfono: ${userData.phone || 'No proporcionado'}`, 14, 104);
-    doc.text(`Dirección: ${userData.address || 'No proporcionada'}`, 14, 110);
-    doc.text(`Ciudad: ${userData.city || 'No proporcionada'}`, 14, 116);
-    doc.text(`Fecha: ${userData.date || new Date().toLocaleDateString('es-ES')}`, 14, 122);
+    y = addText(`Nombre: ${userData.name || 'No proporcionado'}`, margin, y + 6, 180);
+    y = addText(`Identificación: ${userData.id || 'No proporcionada'}`, margin, y + 2, 180);
+    y = addText(`Email: ${userData.email || 'No proporcionado'}`, margin, y + 2, 180);
+    y = addText(`Teléfono: ${userData.phone || 'No proporcionado'}`, margin, y + 2, 180);
+    y = addText(`Dirección: ${userData.address || 'No proporcionada'}`, margin, y + 2, 180);
+    y = addText(`Ciudad: ${userData.city || 'No proporcionada'}`, margin, y + 2, 180);
+    y = addText(`Fecha: ${userData.date || new Date().toLocaleDateString('es-ES')}`, margin, y + 2, 180);
     
-    // Contract terms
-    doc.setTextColor(100, 100, 100);
-    doc.text('1. OBJETO DEL CONTRATO', 14, 138);
-    doc.setTextColor(0, 0, 0);
+    y += 10;
     
-    const terms = [
-      'El objeto del presente contrato es la licencia de uso del software de trading',
-      'automatizado bajo los términos y condiciones aquí establecidos. El VENDEDOR',
-      'garantiza que el software funciona según las especificaciones técnicas descritas',
-      'pero no garantiza resultados financieros específicos debido a la naturaleza',
-      'impredecible de los mercados financieros.'
+    // Términos completos del contrato
+    const contractTerms = [
+      "1. OBJETO DEL CONTRATO",
+      "TRADING INTELIGENTE, en adelante 'EL VENDEDOR', celebra el presente contrato de licencia de software con EL COMPRADOR, quien declara haber proporcionado información veraz en el formulario de compra. El objeto del presente contrato es la licencia de uso del software de trading automatizado (en adelante 'EL ROBOT'), bajo los términos y condiciones aquí establecidos.",
+      "",
+      "2. DERECHOS DE PROPIEDAD INTELECTUAL",
+      "EL ROBOT es propiedad intelectual de TRADING INTELIGENTE y está protegido por las leyes de derechos de autor y tratados internacionales. EL COMPRADOR recibe únicamente una licencia de uso limitada, non-exclusiva, intransferible y revocable.",
+      "",
+      "3. PROHIBICIONES EXPLÍCITAS",
+      "Queda estrictamente prohibido:",
+      "- Realizar ingeniería inversa, descompilación, desensamblado o cualquier intento de derivar el código fuente del software.",
+      "- Modificar, adaptar, traducir o crear trabajos derivados basados en EL ROBOT.",
+      "- Distribuir, sublicenciar, arrendar, alquilar, prestar o transferir EL ROBOT a terceros.",
+      "- Comercializar, revender o redistribuir EL ROBOT de cualquier forma.",
+      "- Utilizar EL ROBOT para proveer servicios de trading a terceros sin autorización expresa.",
+      "",
+      "4. CLAÚSULA DE CONFIDENCIALIDAD",
+      "EL COMPRADOR se compromete a mantener la estricta confidencialidad sobre la estrategia, parámetros de configuración, manuales y cualquier información relacionada con EL ROBOT. Esta obligación de confidencialidad permanecerá vigente incluso después de la finalización del presente contrato.",
+      "",
+      "5. GARANTÍAS Y LIMITACIONES DE RESPONSABILIDAD",
+      "EL VENDEDOR garantiza que EL ROBOT funciona según las especificaciones técnicas descritas en la documentación proporcionada. Sin embargo, EL VENDEDOR no garantiza resultados financieros específicos ni rentabilidad, ya que el mercado financiero es inherentemente riesgoso y está sujeto a factores impredecibles.",
+      "EL COMPRADOR reconoce y acepta que:",
+      "- El trading conlleva riesgos financieros significativos y puede resultar en pérdidas.",
+      "- EL ROBOT puede experimentar períodos de pérdidas debido a condiciones adversas del mercado.",
+      "- El desempeño pasado no garantiza resultados futuros.",
+      "- Es responsable de gestionar su capital y asumir los riesgos asociados.",
+      "",
+      "6. DURACIÓN Y TERMINACIÓN",
+      "La licencia se concede por tiempo indefinido, pero podrá ser terminada por EL VENDEDOR en caso de incumplimiento de cualquiera de las cláusulas aquí establecidas, sin perjuicio de las acciones legales correspondientes.",
+      "",
+      "7. JURISDICCIÓN Y LEY APLICABLE",
+      "Este contrato se regirá por las leyes de Colombia. Cualquier disputa surgida de este contrato será resuelta en los tribunales competentes de Bogotá, Colombia.",
+      "",
+      "8. ACEPTACIÓN DE TÉRMINOS",
+      "Al proceder con la compra, EL COMPRADOR declara haber leído, entendido y aceptado todas las cláusulas aquí establecidas."
     ];
     
-    let y = 144;
-    terms.forEach(line => { 
-      doc.text(line, 14, y, { maxWidth: 180 }); 
-      y += 6; 
+    // Agregar todos los términos del contrato
+    doc.setFontSize(10);
+    contractTerms.forEach(term => {
+      if (term.startsWith("-") || term === "") {
+        y = addText(term, margin, y + 4, 180, 5);
+      } else if (term.includes(".")) {
+        doc.setFont(undefined, 'bold');
+        y = addText(term, margin, y + 8, 180, 6);
+        doc.setFont(undefined, 'normal');
+      } else {
+        y = addText(term, margin, y + 4, 180, 5);
+      }
     });
     
-    // Add signature if available
+    // Agregar firma si está disponible
     if (userData.signature) {
       try {
-        doc.addImage(userData.signature, 'PNG', 14, y + 10, 60, 30);
-        doc.text('Firma del Comprador', 14, y + 45);
+        doc.addPage();
+        y = margin;
+        doc.text("FIRMA DEL COMPRADOR", margin, y);
+        doc.addImage(userData.signature, 'PNG', margin, y + 10, 80, 40);
       } catch (e) {
         console.error('Error adding signature image:', e);
       }
     }
     
-    // Add footer
+    // Footer
     doc.setFontSize(10);
     doc.setTextColor(150, 150, 150);
-    doc.text('Documento generado automáticamente por Trading Inteligente', 105, 280, { align: 'center' });
+    doc.text('Documento generado automáticamente por Trading Inteligente', 105, pageHeight - 10, { align: 'center' });
     
     // Return blob
     return doc.output('blob');
@@ -268,11 +305,11 @@ document.addEventListener('DOMContentLoaded', function() {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
     
-    // Add header
+    // Header
     doc.setFillColor(5, 5, 5);
     doc.rect(0, 0, 210, 40, 'F');
     
-    // Add title
+    // Título
     doc.setTextColor(255, 215, 0);
     doc.setFontSize(20);
     doc.setFont(undefined, 'bold');
@@ -282,41 +319,82 @@ document.addEventListener('DOMContentLoaded', function() {
     doc.setFontSize(16);
     doc.text('FACTURA DE VENTA', 105, 30, { align: 'center' });
     
-    // Invoice details
+    // Detalles de la factura
     doc.setFontSize(10);
     doc.setTextColor(100, 100, 100);
-    const invoiceNumber = Math.floor(Math.random() * 900000) + 100000;
-    doc.text(`Factura No: ${invoiceNumber}`, 14, 50);
-    doc.text(`Fecha: ${userData.date || new Date().toLocaleDateString('es-ES')}`, 14, 56);
+    const invoiceNumber = 'FAC-' + Math.floor(Math.random() * 900000) + 100000;
+    const invoiceDate = new Date().toLocaleDateString('es-ES');
     
-    // Seller and buyer info
+    doc.text(`Factura No: ${invoiceNumber}`, 14, 50);
+    doc.text(`Fecha: ${invoiceDate}`, 14, 56);
+    
+    // Información del vendedor y comprador
     doc.text('Vendedor: Trading Inteligente', 14, 66);
+    doc.text('Email: tradinginteligenteap@gmail.com', 14, 72);
+    doc.text('Teléfono: +57 3506194991', 14, 78);
+    
     doc.text('Comprador:', 120, 66);
     doc.setTextColor(0, 0, 0);
     doc.text(`${userData.name || 'No proporcionado'}`, 120, 72);
+    doc.text(`${userData.email || 'No proporcionado'}`, 120, 78);
+    doc.text(`${userData.phone || 'No proporcionado'}`, 120, 84);
     
-    // Product details
+    // Detalles del producto
+    let y = 100;
     doc.setTextColor(100, 100, 100);
-    doc.text('Descripción', 14, 90);
+    doc.text('Descripción', 14, y);
+    doc.text('Precio', 180, y, { align: 'right' });
+    
+    y += 8;
     doc.setTextColor(0, 0, 0);
-    doc.text(productData.name, 14, 96);
-    doc.text(`$${productData.price} USD`, 180, 96, { align: 'right' });
+    doc.text(productData.name, 14, y);
+    doc.text(`$${productData.price} USD`, 180, y, { align: 'right' });
     
     // Total
-    doc.line(14, 110, 196, 110);
+    y += 15;
+    doc.line(14, y, 196, y);
+    y += 10;
     doc.setTextColor(100, 100, 100);
-    doc.text('Total:', 150, 120, { align: 'right' });
+    doc.text('Subtotal:', 150, y, { align: 'right' });
+    doc.setTextColor(0, 0, 0);
+    doc.text(`$${productData.price} USD`, 180, y, { align: 'right' });
+    
+    y += 8;
+    doc.setTextColor(100, 100, 100);
+    doc.text('IVA (0%):', 150, y, { align: 'right' });
+    doc.setTextColor(0, 0, 0);
+    doc.text('$0 USD', 180, y, { align: 'right' });
+    
+    y += 8;
+    doc.setTextColor(100, 100, 100);
+    doc.text('Total:', 150, y, { align: 'right' });
     doc.setTextColor(0, 0, 0);
     doc.setFont(undefined, 'bold');
-    doc.text(`$${productData.price} USD`, 180, 120, { align: 'right' });
-    
-    // Payment info
+    doc.text(`$${productData.price} USD`, 180, y, { align: 'right' });
     doc.setFont(undefined, 'normal');
-    doc.setTextColor(100, 100, 100);
-    doc.text(`Método de pago: ${paymentData.method}`, 14, 136);
-    doc.text(`Referencia: ${paymentData.reference}`, 14, 142);
     
-    // Add footer
+    // Información de pago
+    y += 20;
+    doc.setTextColor(100, 100, 100);
+    doc.text('Información de Pago:', 14, y);
+    y += 8;
+    doc.setTextColor(0, 0, 0);
+    doc.text(`Método: ${paymentData.method}`, 14, y);
+    y += 6;
+    doc.text(`Referencia: ${paymentData.reference}`, 14, y);
+    y += 6;
+    doc.text(`Fecha: ${invoiceDate}`, 14, y);
+    
+    // Términos y condiciones
+    y += 15;
+    doc.setTextColor(100, 100, 100);
+    doc.text('Términos y condiciones:', 14, y);
+    y += 6;
+    doc.setFontSize(8);
+    doc.setTextColor(0, 0, 0);
+    doc.text('Esta factura sirve como comprobante de compra del software. No aplica para reembolsos una vez descargado el producto.', 14, y, { maxWidth: 180 });
+    
+    // Footer
     doc.setFontSize(10);
     doc.setTextColor(150, 150, 150);
     doc.text('Documento generado automáticamente por Trading Inteligente', 105, 280, { align: 'center' });
@@ -432,10 +510,9 @@ document.addEventListener('DOMContentLoaded', function() {
       const id = document.getElementById('userId')?.value;
       const city = document.getElementById('userCity')?.value;
       const agree = document.getElementById('agreeTermsModal')?.checked;
-      const userBank = document.getElementById('userBank')?.value;
 
-      if (!name || !email || !phone || !id || !city || !agree || !userBank) {
-        showAlert('Completa todos los campos, selecciona tu banco y acepta el contrato antes de confirmar', 'danger');
+      if (!name || !email || !phone || !id || !city || !agree) {
+        showAlert('Completa todos los campos y acepta el contrato antes de confirmar', 'danger');
         return;
       }
       if (!validateEmail(email)) {
@@ -458,23 +535,14 @@ document.addEventListener('DOMContentLoaded', function() {
       downloadBlob(contractBlob, `Contrato_${productName}_${userData.name.replace(/\s+/g, '_')}.pdf`);
       downloadBlob(invoiceBlob, `Factura_${productName}_${userData.name.replace(/\s+/g, '_')}.pdf`);
 
-      showAlert('Documentos descargados. Serás redirigido a tu banco para realizar la transferencia.', 'success');
+      showAlert('Documentos descargados. Realiza la transferencia a la cuenta NU (llave @WAV687) y envía el comprobante.', 'success');
 
-      // Redirect to bank after a short delay
-      setTimeout(() => {
-        const bankUrl = bankUrls[userBank] || 'https://www.google.com/search?q=' + encodeURIComponent(userBank + ' banco colombia');
-        window.open(bankUrl, '_blank');
-        
-        // Close modal
-        const modalElement = document.getElementById('checkoutModal');
-        if (modalElement) {
-          const modal = bootstrap.Modal.getInstance(modalElement);
-          if (modal) modal.hide();
-        }
-        
-        // Clear form fields
-        clearModalForm();
-      }, 1500);
+      // Close modal
+      const modalElement = document.getElementById('checkoutModal');
+      if (modalElement) {
+        const modal = bootstrap.Modal.getInstance(modalElement);
+        if (modal) modal.hide();
+      }
     });
   }
 
@@ -486,7 +554,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const userId = document.getElementById('userId');
     const userCity = document.getElementById('userCity');
     const agreeTermsModal = document.getElementById('agreeTermsModal');
-    const userBank = document.getElementById('userBank');
     
     if (userName) userName.value = '';
     if (userEmail) userEmail.value = '';
@@ -494,7 +561,6 @@ document.addEventListener('DOMContentLoaded', function() {
     if (userId) userId.value = '';
     if (userCity) userCity.value = '';
     if (agreeTermsModal) agreeTermsModal.checked = false;
-    if (userBank) userBank.value = '';
     
     if (signaturePad) {
       signaturePad.clear();
@@ -557,31 +623,19 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  // --- CONTACT FORM ---
-  const contactForm = document.getElementById('contactForm');
-  if (contactForm) {
-    contactForm.addEventListener('submit', function(e) {
-      e.preventDefault();
-      showAlert('¡Mensaje enviado correctamente! Te contactaremos pronto.', 'success');
-      contactForm.reset();
-    });
-  }
-
-  // --- IMAGE GALLERY ---
-  window.changeImage = function(mainImageId, newSrc) {
-    const mainImage = document.getElementById(mainImageId);
-    if (mainImage) {
-      mainImage.src = newSrc;
-    }
-  };
-
   // --- TESTIMONIALS (localStorage) ---
   const testimonialInner = document.getElementById('testimonialInner');
   const initialTestimonials = [
     { name: 'Carlos M.', text: '"LeidyBot1 ha transformado mi forma de operar. La gestión de riesgo es excepcional y los resultados son consistentes mes tras mes."' },
     { name: 'Ana R.', text: '"Estoy impaciente por probar WilliBot1. Si es la mitad de bueno como LeidyBot1, será una revolución en el trading automatizado."' },
     { name: 'Javier L.', text: '"Opero con LeidyBot1 en 3 cuentas diferentes con configuraciones distintas. Los resultados son consistentes en todas."' },
-    { name: 'Laura T.', text: '"Invertí $500 en enero y hoy tengo más de $9,000. La mejor decisión financiera que he tomado."' }
+    { name: 'Laura T.', text: '"Invertí $500 en enero y hoy tengo más de $9,000. La mejor decisión financiera que he tomado."' },
+    { name: 'Miguel Ángel', text: '"Llevo 4 meses usando LeidyBot1 y he obtenido un 25% de rentabilidad mensual. Superó todas mis expectativas."' },
+    { name: 'Sofía R.', text: '"El soporte es excelente. Me ayudaron a configurar todo y resolver mis dudas rápidamente."' },
+    { name: 'Ricardo P.', text: '"Después de probar varios EAs, finalmente encontró uno que realmente funciona. LeidyBot1 es increíble."' },
+    { name: 'Elena C.', text: '"La gestión de riesgo es lo que más me gusta. Me siento seguro incluso en mercados volátiles."' },
+    { name: 'Diego M.', text: '"Empecé con $200 y en 6 meses tengo $2,500. Los resultados hablan por sí solos."' },
+    { name: 'Carolina V.', text: '"Recomiendo LeidyBot1 a todos mis amigos. Es transparente y cumple lo que promete."' }
   ];
   
   let testimonials = JSON.parse(localStorage.getItem('ti_testimonials')) || initialTestimonials;
@@ -598,7 +652,7 @@ document.addEventListener('DOMContentLoaded', function() {
           <div class="testimonial-avatar">${t.name[0]}</div>
           <div class="text-start">
             <div class="small text-white">${t.text}</div>
-            <div class="mt-2"><strong class="text-white">${t.name}</strong></div>
+            <div class="mt-2"><strong>${t.name}</strong></div>
           </div>
         </div>
       `;
@@ -633,15 +687,6 @@ document.addEventListener('DOMContentLoaded', function() {
       testimonialForm.reset();
       
       showAlert('¡Gracias por tu testimonio! Se ha añadido al carrusel.', 'success');
-      
-      // Close modal
-      setTimeout(() => {
-        const modalElement = document.getElementById('testimonialModal');
-        if (modalElement) {
-          const modal = bootstrap.Modal.getInstance(modalElement);
-          if (modal) modal.hide();
-        }
-      }, 1500);
     });
   }
 
