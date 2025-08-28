@@ -16,727 +16,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/signature_pad/1.5.3/signature_pad.min.js"></script>
 
-    <style>
-        /* Variables mejoradas */
-        :root {
-            --gold: #FFD700;
-            --dark-gold: #C99E00;
-            --light-gold: #FFED4E;
-            --bg-dark: #050505;
-            --card-dark: #0b0b0b;
-            --card-darker: #080808;
-            --muted: #ffffff;
-            --soft-bg: #1a1a1a;
-            --accent: rgba(255,215,0,0.1);
-            --glass: rgba(255,255,255,0.05);
-            --shadow: rgba(0,0,0,0.7);
-            --text-light: #ffffff;
-            --text-lighter: #ffffff;
-        }
-
-        /* Base mejorada */
-        * {
-            box-sizing: border-box;
-        }
-        body {
-            margin: 0;
-            font-family: 'Montserrat', sans-serif;
-            background: linear-gradient(135deg, #030303 0%, #070707 50%, #0a0a0a 100%);
-            color: var(--text-light);
-            -webkit-font-smoothing: antialiased;
-            scroll-behavior: smooth;
-            line-height: 1.6;
-        }
-
-        /* NAV */
-        .nav-gold {
-            background: linear-gradient(90deg, rgba(0,0,0,0.95), rgba(10,10,10,0.98));
-            border-bottom: 1px solid rgba(255,215,0,0.2);
-            box-shadow: 0 8px 30px var(--shadow);
-            backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
-        }
-
-        .nav-gold.scrolled {
-            padding: 0.5rem 0;
-            background: rgba(5,5,5,0.95);
-        }
-
-        .logo-img {
-            width: 70px;
-            height: 70px;
-            object-fit: cover;
-            border-radius: 12px;
-            box-shadow: 0 6px 25px rgba(0,0,0,0.5);
-            transition: all 0.3s ease;
-            border: 2px solid var(--gold);
-        }
-
-        .logo-img:hover {
-            transform: scale(1.05) rotate(2deg);
-            box-shadow: 0 8px 30px rgba(255,215,0,0.2);
-        }
-
-        .brand-title {
-            font-weight: 800;
-            font-size: 1.5rem;
-            letter-spacing: 0.5px;
-        }
-
-        .brand-sub {
-            font-size: 0.75rem;
-            color: var(--muted);
-            letter-spacing: 1px;
-        }
-
-        .navbar-nav .nav-link {
-            position: relative;
-            padding: 0.5rem 1.2rem;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            color: var(--text-light);
-        }
-
-        .navbar-nav .nav-link::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            width: 0;
-            height: 2px;
-            background: linear-gradient(90deg, var(--gold), var(--dark-gold));
-            transition: all 0.3s ease;
-            transform: translateX(-50%);
-        }
-
-        .navbar-nav .nav-link:hover::after {
-            width: 70%;
-        }
-
-        .navbar-nav .nav-link:hover {
-            color: var(--gold);
-        }
-
-        /* HERO mejorado */
-        .hero-section {
-            text-align: center;
-            padding: 7rem 1rem;
-            background: linear-gradient(135deg, rgba(0,0,0,0.7), rgba(0,0,0,0.7)), 
-                        url('https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80') center/cover no-repeat;
-            border-bottom: 1px solid rgba(255,215,0,0.15);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .hero-section::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle at 50% 50%, rgba(255,215,0,0.1) 0%, transparent 60%);
-        }
-
-        .hero-section h1 {
-            font-size: 3.5rem;
-            font-weight: 800;
-            margin-bottom: 1.5rem;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.7);
-            letter-spacing: -0.5px;
-        }
-
-        .hero-section .lead {
-            font-size: 1.35rem;
-            color: var(--text-lighter);
-            margin-bottom: 2.5rem;
-            max-width: 700px;
-            margin-left: auto;
-            margin-right: auto;
-            font-weight: 400;
-        }
-
-        .text-gold {
-            color: var(--gold);
-            background: linear-gradient(135deg, var(--gold), var(--dark-gold));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            font-weight: 700;
-        }
-
-        /* Buttons mejorados */
-        .btn-cta {
-            background: linear-gradient(135deg, var(--gold), var(--dark-gold));
-            color: #000;
-            border: none;
-            padding: 14px 28px;
-            font-weight: 700;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(255,215,0,0.2);
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-            letter-spacing: 0.5px;
-        }
-
-        .btn-cta::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-            transition: all 0.6s ease;
-        }
-
-        .btn-cta:hover::before {
-            left: 100%;
-        }
-
-        .btn-cta:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 35px rgba(255,215,0,0.3);
-        }
-
-        .btn-gold {
-            background: linear-gradient(135deg, var(--gold), var(--dark-gold));
-            color: #000;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 10px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            box-shadow: 0 5px 15px rgba(255,215,0,0.15);
-        }
-
-        .btn-gold:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(255,215,0,0.25);
-        }
-
-        .btn-outline-gold {
-            background: transparent;
-            border: 2px solid var(--gold);
-            color: var(--gold);
-            padding: 10px 20px;
-            border-radius: 10px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-
-        .btn-outline-gold:hover {
-            background: var(--gold);
-            color: #000;
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(255,215,0,0.2);
-        }
-
-        .btn-ghost {
-            background: transparent;
-            border: 2px solid rgba(255,255,255,0.1);
-            color: #fff;
-            border-radius: 10px;
-            padding: 10px 20px;
-            transition: all 0.3s ease;
-        }
-
-        .btn-ghost:hover {
-            background: rgba(255,255,255,0.05);
-            border-color: rgba(255,215,0,0.4);
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(255,215,0,0.1);
-        }
-
-        /* Cards & product mejorados */
-        .card {
-            background: linear-gradient(135deg, var(--card-dark), var(--card-darker));
-            border-radius: 16px;
-            border: 1px solid rgba(255,215,0,0.1);
-            overflow: hidden;
-            transition: all 0.4s ease;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
-        }
-
-        .card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
-            border-color: rgba(255,215,0,0.3);
-        }
-
-        .product-card {
-            box-shadow: 0 18px 40px var(--shadow);
-            overflow: hidden;
-        }
-
-        .product-media {
-            background: linear-gradient(135deg, #0f0f0f, #121212);
-            border-right: 1px solid rgba(255,215,0,0.1);
-            position: relative;
-        }
-
-        .product-media::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 30%;
-            background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
-        }
-
-        .img-thumb {
-            width: 80px;
-            height: 60px;
-            object-fit: cover;
-            border-radius: 8px;
-            border: 2px solid transparent;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
-        .img-thumb:hover {
-            transform: scale(1.1);
-            border-color: var(--gold);
-            box-shadow: 0 5px 15px rgba(255,215,0,0.2);
-        }
-
-        .robot-description {
-            font-size: 0.95rem;
-            line-height: 1.7;
-        }
-
-        .robot-description p {
-            margin-bottom: 1.2rem;
-        }
-
-        .robot-description strong {
-            color: var(--gold);
-            font-weight: 700;
-        }
-
-        /* Results mejorados */
-        .bg-soft {
-            background: var(--soft-bg);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .bg-soft::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle at 20% 70%, rgba(255,215,0,0.05) 0%, transparent 40%);
-        }
-
-        .result-card {
-            background: linear-gradient(135deg, #0b0b0b, #0f0f0f);
-            border-left: 6px solid var(--gold);
-            border-radius: 16px;
-            color: #fff;
-            transition: all 0.3s ease;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
-            overflow: hidden;
-            position: relative;
-        }
-
-        .result-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, rgba(255,215,0,0.03), transparent);
-        }
-
-        .result-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 30px rgba(0,0,0,0.5);
-            border-left: 6px solid var(--light-gold);
-        }
-
-        /* Testimonials mejorados */
-        #testimonials {
-            background: linear-gradient(135deg, #080808, #0a0a0a);
-            position: relative;
-            overflow: hidden;
-        }
-
-        #testimonials::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle at 80% 20%, rgba(255,215,0,0.05) 0%, transparent 40%);
-        }
-
-        .testimonial-card {
-            background: linear-gradient(135deg, #0c0c0c, #101010);
-            border-radius: 16px;
-            padding: 2rem;
-            height: 100%;
-            border: 1px solid rgba(255,215,0,0.15);
-            transition: all 0.3s ease;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-        }
-
-        .testimonial-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 30px rgba(0,0,0,0.4);
-            border-color: rgba(255,215,0,0.3);
-        }
-
-        .testimonial-avatar {
-            width: 70px;
-            height: 70px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--gold), var(--dark-gold));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 1.8rem;
-            color: #000;
-            margin-right: 1.5rem;
-            flex-shrink: 0;
-            box-shadow: 0 5px 15px rgba(255,215,0,0.3);
-        }
-
-        .carousel-item {
-            padding: 2rem;
-        }
-
-        /* Pricing mejorado */
-        .pricing-card {
-            border-radius: 20px;
-            padding: 2.5rem;
-            position: relative;
-            overflow: hidden;
-            transition: all 0.4s ease;
-            border: 1px solid rgba(255,215,0,0.1);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
-        }
-
-        .pricing-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle at top right, rgba(255,215,0,0.08) 0%, transparent 70%);
-        }
-
-        .pricing-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
-            border-color: rgba(255,215,0,0.2);
-        }
-
-        .price-block s {
-            color: #aaa;
-            font-size: 1.3rem;
-        }
-
-        .price-block h2 {
-            font-size: 3rem;
-            margin: 0.5rem 0;
-            font-weight: 800;
-        }
-
-        .note {
-            color: var(--muted);
-            font-size: 0.95rem;
-        }
-
-        .pricing-features {
-            list-style: none;
-            padding: 0;
-            margin: 2rem 0;
-        }
-
-        .pricing-features li {
-            padding: 0.7rem 0;
-            position: relative;
-            padding-left: 2.2rem;
-            font-size: 1rem;
-        }
-
-        .pricing-features li::before {
-            content: '✓';
-            position: absolute;
-            left: 0;
-            color: var(--gold);
-            font-weight: bold;
-            font-size: 1.2rem;
-        }
-
-        /* Contract (white bg) mejorado */
-        #contract {
-            background: #f8f9fa;
-        }
-
-        .contract-white {
-            background: #ffffff;
-            color: #111;
-            border-radius: 20px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
-            padding: 3rem;
-            border: 1px solid #eee;
-        }
-
-        .contract-white h4 {
-            border-bottom: 2px solid var(--gold);
-            padding-bottom: 12px;
-            margin-top: 2rem;
-            color: #222;
-            font-weight: 700;
-        }
-
-        .contract-white h5 {
-            color: #333;
-            margin-top: 1.5rem;
-            font-weight: 600;
-        }
-
-        .contract-white p, .contract-white li {
-            color: #444;
-            line-height: 1.6;
-        }
-
-        .contract-white ul {
-            padding-left: 1.5rem;
-        }
-
-        .contract-white li {
-            margin-bottom: 0.5rem;
-        }
-
-        /* Signature mejorado */
-        .signature-pad {
-            background: #fff;
-            border-radius: 12px;
-            padding: 1rem;
-            border: 2px dashed #ddd;
-            transition: all 0.3s ease;
-        }
-
-        .signature-pad:focus-within {
-            border-color: var(--gold);
-            box-shadow: 0 0 0 3px rgba(255,215,0,0.1);
-        }
-
-        /* Payment box mejorado */
-        .payment-methods {
-            background: linear-gradient(135deg, #080808, #0e0e0e);
-            padding: 2rem;
-            border-radius: 16px;
-            color: #e9ecef;
-            border: 1px solid rgba(255,215,0,0.15);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-        }
-
-        .payment-info .account-box {
-            background: rgba(255,215,0,0.1);
-            padding: 1.5rem;
-            border-radius: 12px;
-            border: 1px solid rgba(255,215,0,0.2);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        }
-
-        /* Forms mejorados */
-        .form-control {
-            background: rgba(255,255,255,0.07);
-            border: 1px solid rgba(255,255,255,0.1);
-            color: #fff;
-            padding: 12px 16px;
-            border-radius: 10px;
-            transition: all 0.3s ease;
-            font-size: 1rem;
-        }
-
-        .form-control:focus {
-            background: rgba(255,255,255,0.1);
-            border-color: var(--gold);
-            box-shadow: 0 0 0 3px rgba(255,215,0,0.15);
-            color: #fff;
-        }
-
-        .form-control::placeholder {
-            color: #bdbdbd;
-        }
-
-        .contract-white .form-control {
-            background: #f8f9fa;
-            border: 1px solid #ced4da;
-            color: #495057;
-        }
-
-        .contract-white .form-control:focus {
-            background: #fff;
-            border-color: var(--gold);
-            box-shadow: 0 0 0 3px rgba(255,215,0,0.2);
-            color: #495057;
-        }
-
-        /* Footer mejorado */
-        .footer-dark {
-            background: linear-gradient(135deg, #030303, #050505);
-            color: var(--muted);
-            border-top: 1px solid rgba(255,215,0,0.1);
-            padding: 3rem 0 1.5rem;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .footer-dark::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, var(--gold), transparent);
-        }
-
-        .footer-dark a {
-            color: var(--muted);
-            transition: all 0.3s ease;
-            font-size: 1.2rem;
-        }
-
-        .footer-dark a:hover {
-            color: var(--gold);
-            transform: translateY(-3px);
-        }
-
-        /* Helpers & responsive mejorados */
-        .text-muted {
-            color: #ffffff !important;
-        }
-
-        section {
-            padding: 6rem 0;
-        }
-
-        .section-title {
-            position: relative;
-            margin-bottom: 3.5rem;
-            text-align: center;
-            font-weight: 800;
-            font-size: 2.5rem;
-        }
-
-        .section-title::after {
-            content: '';
-            display: block;
-            width: 80px;
-            height: 4px;
-            background: linear-gradient(90deg, var(--gold), var(--dark-gold));
-            margin: 1.2rem auto;
-            border-radius: 4px;
-        }
-
-        .badge {
-            font-weight: 600;
-            padding: 0.5rem 1rem;
-            border-radius: 50px;
-        }
-
-        /* Animaciones y efectos */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .fade-in {
-            animation: fadeIn 0.8s ease forwards;
-        }
-
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(255,215,0,0.4); }
-            70% { box-shadow: 0 0 0 15px rgba(255,215,0,0); }
-            100% { box-shadow: 0 0 0 0 rgba(255,215,0,0); }
-        }
-
-        .pulse {
-            animation: pulse 2s infinite;
-        }
-
-        /* Responsive */
-        @media (max-width: 992px) {
-            .hero-section {
-                padding: 5rem 1rem;
-            }
-            .hero-section h1 {
-                font-size: 2.8rem;
-            }
-            .section-title {
-                font-size: 2.2rem;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .hero-section {
-                padding: 4rem 1rem;
-            }
-            .hero-section h1 {
-                font-size: 2.3rem;
-            }
-            .hero-section .lead {
-                font-size: 1.1rem;
-            }
-            .logo-img {
-                width: 55px;
-                height: 55px;
-            }
-            .brand-title {
-                font-size: 1.3rem;
-            }
-            section {
-                padding: 4rem 0;
-            }
-            .section-title {
-                font-size: 2rem;
-                margin-bottom: 2.5rem;
-            }
-            .testimonial-avatar {
-                width: 60px;
-                height: 60px;
-                font-size: 1.5rem;
-                margin-right: 1rem;
-            }
-            .pricing-card {
-                padding: 2rem;
-            }
-            .price-block h2 {
-                font-size: 2.5rem;
-            }
-        }
-
-        @media (max-width: 576px) {
-            .hero-section h1 {
-                font-size: 2rem;
-            }
-            .btn-cta {
-                padding: 12px 20px;
-                font-size: 1rem;
-            }
-            .section-title {
-                font-size: 1.8rem;
-            }
-            .contract-white {
-                padding: 2rem 1.5rem;
-            }
-        }
-    </style>
+    <!-- Custom CSS -->
+    <link href="styles.css" rel="stylesheet">
 </head>
 <body>
 
@@ -762,7 +43,11 @@
         <li class="nav-item"><a class="nav-link" href="#testimonials">Testimonios</a></li>
         <li class="nav-item"><a class="nav-link" href="#pricing">Precios</a></li>
         <li class="nav-item"><a class="nav-link" href="#contract">Contrato</a></li>
-        <li class="nav-item ms-3"><a class="btn btn-cta pulse" href="#pricing">Comprar Ahora</a></li>
+        <li class="nav-item ms-3">
+          <button class="btn btn-cta pulse" data-bs-toggle="modal" data-bs-target="#checkoutModal" data-product="LeidyBot1" data-price="260">
+            Comprar Ahora
+          </button>
+        </li>
       </ul>
     </div>
   </div>
@@ -772,9 +57,11 @@
 <header class="hero-section">
   <div class="container text-center">
     <h1 class="display-4 fw-bold fade-in">DOMINA EL MERCADO CON <span class="text-gold">INTELIGENCIA</span></h1>
-    <p class="lead text-muted">Robots para MetaTrader 5 centrados en calidad, gestión de riesgo y resultados sostenibles</p>
+    <p class="lead text-white">Robots para MetaTrader 5 centrados en calidad, gestión de riesgo y resultados sostenibles</p>
     <div class="d-flex justify-content-center gap-3 mt-4">
-      <a href="#pricing" class="btn btn-cta btn-lg">Comprar Ahora</a>
+      <button class="btn btn-cta btn-lg" data-bs-toggle="modal" data-bs-target="#checkoutModal" data-product="LeidyBot1" data-price="260">
+        Comprar Ahora
+      </button>
       <a href="#bots" class="btn btn-outline-light btn-lg">Ver Robots</a>
     </div>
   </div>
@@ -785,7 +72,7 @@
   <div class="container">
     <div class="text-center mb-5">
       <h2 class="fw-bold section-title">Nuestros Robots</h2>
-      <p class="text-muted">Selecciona el robot que mejor se adapte a tu perfil</p>
+      <p class="text-white">Selecciona el robot que mejor se adapte a tu perfil</p>
     </div>
 
     <div class="row g-4">
@@ -892,8 +179,8 @@
                   <li>Detección de trampas del mercado</li>
                 </ul>
                 <div class="mt-auto d-flex gap-2">
-                  <button class="btn btn-outline-gold" data-bs-toggle="modal" data-bs-target="#waitlistModal">
-                    <i class="fas fa-envelope me-1"></i> Lista de Espera
+                  <button class="btn btn-outline-gold" data-bs-toggle="modal" data-bs-target="#checkoutModal" data-product="WilliBot1" data-price="499">
+                    <i class="fas fa-shopping-cart me-1"></i> Reservar
                   </button>
                   <a class="btn btn-ghost" href="#testimonials">Ver Testimonios</a>
                 </div>
@@ -912,7 +199,7 @@
   <div class="container">
     <div class="text-center mb-5">
       <h2 class="fw-bold section-title">📊 RESULTADOS REALES (ENERO - AGOSTO 2025)</h2>
-      <p class="text-muted">Resultados de <strong class="text-gold">LeidyBot1</strong> en pruebas controladas</p>
+      <p class="text-white">Resultados de <strong class="text-gold">LeidyBot1</strong> en pruebas controladas</p>
     </div>
 
     <div class="row g-4 justify-content-center">
@@ -921,7 +208,7 @@
           <h4 class="text-gold">Prueba 1 — LeidyBot1</h4>
           <h1 class="display-5 fw-bold">$50 → $1,100</h1>
           <p class="text-success">🔥 +2,100% en 8 meses</p>
-          <p class="small text-muted">Cuenta demo - modo conservador</p>
+          <p class="small text-white">Cuenta demo - modo conservador</p>
         </div>
       </div>
       <div class="col-md-5">
@@ -929,7 +216,7 @@
           <h4 class="text-gold">Prueba 2 — LeidyBot1</h4>
           <h1 class="display-5 fw-bold">$250 → $4,500</h1>
           <p class="text-success">🚀 +1,700% en 8 meses</p>
-          <p class="small text-muted">Cuenta real - configuración estándar</p>
+          <p class="small text-white">Cuenta real - configuración estándar</p>
         </div>
       </div>
     </div>
@@ -941,7 +228,7 @@
   <div class="container">
     <div class="text-center mb-5">
       <h2 class="fw-bold text-gold section-title">Testimonios</h2>
-      <p class="text-muted">Lo que dicen nuestros usuarios</p>
+      <p class="text-white">Lo que dicen nuestros usuarios</p>
     </div>
 
     <div id="testimonialsCarousel" class="carousel slide mb-5" data-bs-ride="carousel">
@@ -950,7 +237,7 @@
           <div class="d-flex gap-3 align-items-center justify-content-center">
             <div class="testimonial-avatar">C</div>
             <div class="text-start">
-              <div class="small text-muted">"LeidyBot1 ha transformado mi forma de operar. La gestión de riesgo es excepcional y los resultados son consistentes mes tras mes."</div>
+              <div class="small text-white">"LeidyBot1 ha transformado mi forma de operar. La gestión de riesgo es excepcional y los resultados son consistentes mes tras mes."</div>
               <div class="mt-2"><strong>Carlos M.</strong></div>
             </div>
           </div>
@@ -959,7 +246,7 @@
           <div class="d-flex gap-3 align-items-center justify-content-center">
             <div class="testimonial-avatar">A</div>
             <div class="text-start">
-              <div class="small text-muted">"Estoy impaciente por probar WilliBot1. Si es la mitad de bueno como LeidyBot1, será una revolución en el trading automatizado."</div>
+              <div class="small text-white">"Estoy impaciente por probar WilliBot1. Si es la mitad de bueno como LeidyBot1, será una revolución en el trading automatizado."</div>
               <div class="mt-2"><strong>Ana R.</strong></div>
             </div>
           </div>
@@ -968,7 +255,7 @@
           <div class="d-flex gap-3 align-items-center justify-content-center">
             <div class="testimonial-avatar">J</div>
             <div class="text-start">
-              <div class="small text-muted">"Opero con LeidyBot1 en 3 cuentas diferentes con configuraciones distintas. Los resultados son consistentes en todas."</div>
+              <div class="small text-white">"Opero con LeidyBot1 en 3 cuentas diferentes con configuraciones distintas. Los resultados son consistentes en todas."</div>
               <div class="mt-2"><strong>Javier L.</strong></div>
             </div>
           </div>
@@ -977,7 +264,7 @@
           <div class="d-flex gap-3 align-items-center justify-content-center">
             <div class="testimonial-avatar">L</div>
             <div class="text-start">
-              <div class="small text-muted">"Invertí $500 en enero y hoy tengo más de $9,000. La mejor decisión financiera que he tomado."</div>
+              <div class="small text-white">"Invertí $500 en enero y hoy tengo más de $9,000. La mejor decisión financiera que he tomado."</div>
               <div class="mt-2"><strong>Laura T.</strong></div>
             </div>
           </div>
@@ -986,7 +273,7 @@
           <div class="d-flex gap-3 align-items-center justify-content-center">
             <div class="testimonial-avatar">M</div>
             <div class="text-start">
-              <div class="small text-muted">"Llevo 4 meses usando LeidyBot1 y he obtenido un 25% de rentabilidad mensual. Superó todas mis expectativas."</div>
+              <div class="small text-white">"Llevo 4 meses usando LeidyBot1 y he obtenido un 25% de rentabilidad mensual. Superó todas mis expectativas."</div>
               <div class="mt-2"><strong>Miguel Ángel</strong></div>
             </div>
           </div>
@@ -1015,7 +302,7 @@
       <div class="col-lg-6">
         <div class="card p-4 h-100">
           <h5>Únete al grupo</h5>
-          <p class="small text-muted mb-3">Accede a resultados, soporte y guías exclusivas en nuestro grupo de Telegram.</p>
+          <p class="small text-white mb-3">Accede a resultados, soporte y guías exclusivas en nuestro grupo de Telegram.</p>
           <a href="https://t.me/+wO3kni1c09xkYjcx" target="_blank" class="btn btn-outline-gold">Unirme al Grupo</a>
         </div>
       </div>
@@ -1028,7 +315,7 @@
   <div class="container">
     <div class="text-center mb-5">
       <h2 class="fw-bold section-title">Precios y Planes</h2>
-      <p class="text-muted">Promociones por tiempo limitado</p>
+      <p class="text-white">Promociones por tiempo limitado</p>
     </div>
 
     <div class="row g-4 justify-content-center">
@@ -1039,9 +326,9 @@
             <span class="badge bg-danger">Oferta Limitada</span>
           </div>
           <div class="price-block mb-3">
-            <div class="small text-muted">Precio normal</div>
+            <div class="small text-white">Precio normal</div>
             <div><s>$350</s></div>
-            <h2 class="fw-bold text-gold">$260 <small class="text-muted fw-light">/único</small></h2>
+            <h2 class="fw-bold text-gold">$260 <small class="text-white fw-light">/único</small></h2>
             <div class="small text-success">Ahorras $90 (25% descuento)</div>
           </div>
 
@@ -1068,8 +355,8 @@
             <span class="badge bg-warning text-dark">Preventa</span>
           </div>
           <div class="price-block mb-3">
-            <h2 class="fw-bold text-gold">$499 <small class="text-muted fw-light">/único</small></h2>
-            <div class="small text-muted">Acceso Beta + Soporte VIP</div>
+            <h2 class="fw-bold text-gold">$499 <small class="text-white fw-light">/único</small></h2>
+            <div class="small text-white">Acceso Beta + Soporte VIP</div>
           </div>
           <ul class="pricing-features">
             <li>Acceso anticipado a la versión beta</li>
@@ -1079,8 +366,8 @@
             <li>Acceso a funciones avanzadas exclusivas</li>
           </ul>
           <div class="d-grid">
-            <button class="btn btn-outline-gold" data-bs-toggle="modal" data-bs-target="#waitlistModal">
-              Reservar WilliBot1
+            <button class="btn btn-outline-gold" data-bs-toggle="modal" data-bs-target="#checkoutModal" data-product="WilliBot1" data-price="499">
+              <i class="fas fa-shopping-cart me-1"></i> Reservar WilliBot1
             </button>
           </div>
         </div>
@@ -1088,7 +375,7 @@
     </div>
 
     <div class="text-center mt-4">
-      <div class="note small text-muted">* Precio normal de LeidyBot1: $350. Descuento válido por tiempo limitado.</div>
+      <div class="note small text-white">* Precio normal de LeidyBot1: $350. Descuento válido por tiempo limitado.</div>
     </div>
   </div>
 </section>
@@ -1098,7 +385,7 @@
   <div class="container">
     <div class="text-center mb-5">
       <h2 class="fw-bold section-title">Contrato Legal</h2>
-      <p class="text-muted">Lee y descarga el contrato antes de comprar</p>
+      <p class="text-white">Lee y descarga el contrato antes de comprar</p>
     </div>
 
     <div class="card contract-white p-4">
@@ -1107,7 +394,7 @@
         <p>TRADING INTELIGENTE, en adelante "EL VENDEDOR", celebra el presente contrato de licencia de software con EL COMPRADOR, quien declara haber proporcionado información veraz en el formulario de compra. El objeto del presente contrato es la licencia de uso del software de trading automatizado (en adelante "EL ROBOT"), bajo los términos y condiciones aquí establecidos.</p>
 
         <h4>2. DERECHOS DE PROPIEDAD INTELECTUAL</h4>
-        <p>EL ROBOT es propiedad intelectual de TRADING INTELIGENTE y está protegido por las leyes de derechos de autor y tratados internacionales. EL COMPRADOR recibe únicamente una licencia de uso limitada, no exclusiva, intransferible y revocable.</p>
+        <p>EL ROBOT es propiedad intelectual de TRADING INTELIGENTE y está protegido por las leyes de derechos de autor y tratados internacionales. EL COMPRADOR recibe únicamente una licencia de uso limitada, non-exclusiva, intransferible y revocable.</p>
 
         <h4>3. PROHIBICIONES EXPLÍCITAS</h4>
         <p>Queda estrictamente prohibido:</p>
@@ -1135,7 +422,7 @@
         <h4>6. DURACIÓN Y TERMINACIÓN</h4>
         <p>La licencia se concede por tiempo indefinido, pero podrá ser terminada por EL VENDEDOR en caso de incumplimiento de cualquiera de las cláusulas aquí establecidas, sin perjuicio de las acciones legales correspondientes.</p>
 
-        <h4>7. JURISDICCIÓN AND LEY APLICABLE</h4>
+        <h4>7. JURISDICCIÓN Y LEY APLICABLE</h4>
         <p>Este contrato se regirá por las leyes de Colombia. Cualquier disputa surgida de este contrato será resuelta en los tribunales competentes de Bogotá, Colombia.</p>
 
         <h4>8. ACEPTACIÓN DE TÉRMINOS</h4>
@@ -1244,17 +531,17 @@
               </div>
 
               <div id="paypalInfo" class="payment-info mt-3">
-                <div class="small text-muted">Para pagar con PayPal, usa la cuenta:</div>
+                <div class="small text-white">Para pagar con PayPal, usa la cuenta:</div>
                 <div class="fw-bold text-gold fs-5 mb-2">@williarvi</div>
                 <div class="d-flex gap-2">
                   <button id="copyPaypal" class="btn btn-outline-secondary btn-sm"><i class="fas fa-copy me-1"></i> Copiar cuenta</button>
                   <button id="paypalBtn" class="btn btn-gold btn-sm ms-auto"><i class="fab fa-paypal me-1"></i> Pagar con PayPal</button>
                 </div>
-                <div class="small text-muted mt-2">Al hacer clic se generarán factura y contrato (PDF) y luego serás redirigido a PayPal.</div>
+                <div class="small text-white mt-2">Al hacer clic se generarán factura y contrato (PDF) y luego serás redirigido a PayPal.</div>
               </div>
 
               <div id="bankInfo" class="payment-info mt-3" style="display:none;">
-                <div class="small text-muted">Realiza la transferencia a nuestra cuenta NU (envía comprobante):</div>
+                <div class="small text-white">Realiza la transferencia a nuestra cuenta NU (envía comprobante):</div>
                 <div class="account-box text-center my-3 p-2">
                   <div class="small">Cuenta de Ahorros NU</div>
                   <div class="fw-bold text-gold fs-4">@WAV687</div>
@@ -1263,7 +550,7 @@
                   <button id="copyBankKey" class="btn btn-outline-secondary btn-sm"><i class="fas fa-copy me-1"></i> Copiar llave</button>
                   <button id="confirmBankPayment" class="btn btn-gold btn-sm ms-auto"><i class="fas fa-check-circle me-1"></i> Confirmar Pago (Descargar documentos)</button>
                 </div>
-                <div class="small text-muted mt-2">Al confirmar se descargarán factura y contrato (PDF).</div>
+                <div class="small text-white mt-2">Al confirmar se descargarán factura y contrato (PDF).</div>
               </div>
 
             </div>
@@ -1307,7 +594,7 @@
     <div class="row align-items-center">
       <div class="col-md-6">
         <div class="mb-2"><strong>Trading Inteligente</strong> © 2025</div>
-        <div class="small text-muted">Email: tradinginteligenteap@gmail.com &nbsp;|&nbsp; WhatsApp: +57 3506194991 &nbsp;|&nbsp; PayPal: @williarvi</div>
+        <div class="small text-white">Email: tradinginteligenteap@gmail.com &nbsp;|&nbsp; WhatsApp: +57 3506194991 &nbsp;|&nbsp; PayPal: @williarvi</div>
       </div>
       <div class="col-md-6 text-md-end">
         <a href="https://www.facebook.com/trading.inteligente.2025" target="_blank" class="me-3"><i class="fab fa-facebook"></i></a>
@@ -1322,555 +609,7 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 <!-- Local script -->
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // --- NAVBAR SCROLL EFFECT ---
-        const navbar = document.querySelector('.nav-gold');
-        window.addEventListener('scroll', function() {
-            if (window.scrollY > 50) {
-                navbar.classList.add('scrolled');
-            } else {
-                navbar.classList.remove('scrolled');
-            }
-        });
-
-        // --- SIGNATURE PAD SETUP ---
-        const canvas = document.getElementById('signatureCanvas');
-        let signaturePad;
-        
-        if (canvas) {
-            // Adjust canvas for high DPI displays
-            const ratio = Math.max(window.devicePixelRatio || 1, 1);
-            canvas.width = canvas.offsetWidth * ratio;
-            canvas.height = canvas.offsetHeight * ratio;
-            canvas.getContext("2d").scale(ratio, ratio);
-            
-            signaturePad = new SignaturePad(canvas, {
-                backgroundColor: 'rgba(255, 255, 255, 0)',
-                penColor: 'rgb(0, 0, 0)',
-                minWidth: 1,
-                maxWidth: 3,
-            });
-            
-            document.getElementById('clearSignature')?.addEventListener('click', () => {
-                signaturePad.clear();
-            });
-            
-            // Make signature pad responsive
-            window.addEventListener('resize', function() {
-                const ratio = Math.max(window.devicePixelRatio || 1, 1);
-                canvas.width = canvas.offsetWidth * ratio;
-                canvas.height = canvas.offsetHeight * ratio;
-                canvas.getContext("2d").scale(ratio, ratio);
-                
-                // Reapply the signature if it exists
-                if (!signaturePad.isEmpty()) {
-                    const data = signaturePad.toData();
-                    signaturePad.clear();
-                    signaturePad.fromData(data);
-                }
-            });
-        }
-
-        // --- SET CONTRACT DATE ---
-        const contractDateInput = document.getElementById('contractDate');
-        if (contractDateInput) {
-            contractDateInput.value = new Date().toLocaleDateString('es-ES', { 
-                day: '2-digit', 
-                month: '2-digit', 
-                year: 'numeric' 
-            });
-        }
-
-        // --- PAYMENT MODAL SETUP ---
-        const checkoutModalEl = document.getElementById('checkoutModal');
-        if (checkoutModalEl) {
-            checkoutModalEl.addEventListener('show.bs.modal', function(event) {
-                const button = event.relatedTarget;
-                const product = button?.getAttribute('data-product') || 'LeidyBot1';
-                const price = button?.getAttribute('data-price') || '260';
-                document.getElementById('modalProductName').textContent = product;
-                document.getElementById('modalProductPrice').textContent = `$${price}`;
-                
-                // Reset form when modal opens
-                document.getElementById('userName').value = '';
-                document.getElementById('userEmail').value = '';
-                document.getElementById('userPhone').value = '';
-                document.getElementById('userId').value = '';
-                document.getElementById('userCity').value = '';
-                document.getElementById('agreeTermsModal').checked = false;
-            });
-        }
-
-        // --- TOGGLE PAYMENT INFO ---
-        const paymentRadios = document.querySelectorAll('input[name="paymentMethod"]');
-        function updatePaymentInfo() {
-            const selected = document.querySelector('input[name="paymentMethod"]:checked')?.value;
-            document.getElementById('paypalInfo').style.display = selected === 'paypal' ? 'block' : 'none';
-            document.getElementById('bankInfo').style.display = selected === 'bank' ? 'block' : 'none';
-        }
-        paymentRadios.forEach(r => r.addEventListener('change', updatePaymentInfo));
-        updatePaymentInfo();
-
-        // --- COPY HELPERS ---
-        function copyToClipboard(text) {
-            navigator.clipboard.writeText(text).then(() => {
-                showAlert('¡Copiado al portapapeles!', 'success');
-            }).catch(() => {
-                showAlert('Error al copiar. Por favor, copia manualmente.', 'danger');
-            });
-        }
-        
-        document.getElementById('copyPaypal')?.addEventListener('click', () => copyToClipboard('@williarvi'));
-        document.getElementById('copyBankKey')?.addEventListener('click', () => copyToClipboard('@WAV687'));
-
-        // --- VALIDATION & UTILITIES ---
-        function validateEmail(email) {
-            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-        }
-        
-        function showAlert(message, type = 'success') {
-            // Create alert element
-            const alertDiv = document.createElement('div');
-            alertDiv.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
-            alertDiv.style.top = '20px';
-            alertDiv.style.right = '20px';
-            alertDiv.style.zIndex = '9999';
-            alertDiv.style.minWidth = '300px';
-            alertDiv.role = 'alert';
-            alertDiv.innerHTML = `
-                <div class="d-flex align-items-center">
-                    <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'} me-2"></i>
-                    <div>${message}</div>
-                    <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            `;
-            
-            // Add to body
-            document.body.appendChild(alertDiv);
-            
-            // Auto remove after 5 seconds
-            setTimeout(() => {
-                if (alertDiv.parentNode) {
-                    bootstrap.Alert.getOrCreateInstance(alertDiv).close();
-                }
-            }, 5000);
-        }
-
-        // --- PDF GENERATION (Contract & Invoice) ---
-        function generateContractPDFBlob(userData, productData) {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-            
-            // Add header
-            doc.setFillColor(5, 5, 5);
-            doc.rect(0, 0, 210, 40, 'F');
-            
-            // Add title
-            doc.setTextColor(255, 215, 0);
-            doc.setFontSize(20);
-            doc.setFont(undefined, 'bold');
-            doc.text('TRADING INTELIGENTE', 105, 20, { align: 'center' });
-            
-            doc.setTextColor(0, 0, 0);
-            doc.setFontSize(16);
-            doc.text('CONTRATO DE LICENCIA DE SOFTWARE', 105, 30, { align: 'center' });
-            
-            // Seller info
-            doc.setFontSize(11);
-            doc.setTextColor(100, 100, 100);
-            doc.text('Datos del Vendedor:', 14, 50);
-            doc.setTextColor(0, 0, 0);
-            doc.text('Trading Inteligente', 14, 56);
-            doc.text('Email: tradinginteligenteap@gmail.com', 14, 62);
-            doc.text('Teléfono: +57 3506194991', 14, 68);
-            
-            // Buyer info
-            doc.setTextColor(100, 100, 100);
-            doc.text('Datos del Comprador:', 14, 80);
-            doc.setTextColor(0, 0, 0);
-            doc.text(`Nombre: ${userData.name || 'No proporcionado'}`, 14, 86);
-            doc.text(`Identificación: ${userData.id || 'No proporcionada'}`, 14, 92);
-            doc.text(`Email: ${userData.email || 'No proporcionado'}`, 14, 98);
-            doc.text(`Teléfono: ${userData.phone || 'No proporcionado'}`, 14, 104);
-            doc.text(`Dirección: ${userData.address || 'No proporcionada'}`, 14, 110);
-            doc.text(`Ciudad: ${userData.city || 'No proporcionada'}`, 14, 116);
-            doc.text(`Fecha: ${userData.date || new Date().toLocaleDateString('es-ES')}`, 14, 122);
-            
-            // Contract terms
-            doc.setTextColor(100, 100, 100);
-            doc.text('1. OBJETO DEL CONTRATO', 14, 138);
-            doc.setTextColor(0, 0, 0);
-            
-            const terms = [
-                'El objeto del presente contrato es la licencia de uso del software de trading',
-                'automatizado bajo los términos y condiciones aquí establecidos. El VENDEDOR',
-                'garantiza que el software funciona según las especificaciones técnicas descritas',
-                'pero no garantiza resultados financieros específicos debido a la naturaleza',
-                'impredecible de los mercados financieros.'
-            ];
-            
-            let y = 144;
-            terms.forEach(line => { 
-                doc.text(line, 14, y, { maxWidth: 180 }); 
-                y += 6; 
-            });
-            
-            // Add signature if available
-            if (userData.signature) {
-                try {
-                    doc.addImage(userData.signature, 'PNG', 14, y + 10, 60, 30);
-                    doc.text('Firma del Comprador', 14, y + 45);
-                } catch (e) {
-                    console.error('Error adding signature image:', e);
-                }
-            }
-            
-            // Add footer
-            doc.setFontSize(10);
-            doc.setTextColor(150, 150, 150);
-            doc.text('Documento generado automáticamente por Trading Inteligente', 105, 280, { align: 'center' });
-            
-            // Return blob
-            return doc.output('blob');
-        }
-
-        function generateInvoicePDFBlob(userData, productData, paymentData) {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-            
-            // Add header
-            doc.setFillColor(5, 5, 5);
-            doc.rect(0, 0, 210, 40, 'F');
-            
-            // Add title
-            doc.setTextColor(255, 215, 0);
-            doc.setFontSize(20);
-            doc.setFont(undefined, 'bold');
-            doc.text('TRADING INTELIGENTE', 105, 20, { align: 'center' });
-            
-            doc.setTextColor(0, 0, 0);
-            doc.setFontSize(16);
-            doc.text('FACTURA DE VENTA', 105, 30, { align: 'center' });
-            
-            // Invoice details
-            doc.setFontSize(10);
-            doc.setTextColor(100, 100, 100);
-            const invoiceNumber = Math.floor(Math.random() * 900000) + 100000;
-            doc.text(`Factura No: ${invoiceNumber}`, 14, 50);
-            doc.text(`Fecha: ${userData.date || new Date().toLocaleDateString('es-ES')}`, 14, 56);
-            
-            // Seller and buyer info
-            doc.text('Vendedor: Trading Inteligente', 14, 66);
-            doc.text('Comprador:', 120, 66);
-            doc.setTextColor(0, 0, 0);
-            doc.text(`${userData.name || 'No proporcionado'}`, 120, 72);
-            
-            // Product details
-            doc.setTextColor(100, 100, 100);
-            doc.text('Descripción', 14, 90);
-            doc.setTextColor(0, 0, 0);
-            doc.text(productData.name, 14, 96);
-            doc.text(`$${productData.price} USD`, 180, 96, { align: 'right' });
-            
-            // Total
-            doc.line(14, 110, 196, 110);
-            doc.setTextColor(100, 100, 100);
-            doc.text('Total:', 150, 120, { align: 'right' });
-            doc.setTextColor(0, 0, 0);
-            doc.setFont(undefined, 'bold');
-            doc.text(`$${productData.price} USD`, 180, 120, { align: 'right' });
-            
-            // Payment info
-            doc.setFont(undefined, 'normal');
-            doc.setTextColor(100, 100, 100);
-            doc.text(`Método de pago: ${paymentData.method}`, 14, 136);
-            doc.text(`Referencia: ${paymentData.reference}`, 14, 142);
-            
-            // Add footer
-            doc.setFontSize(10);
-            doc.setTextColor(150, 150, 150);
-            doc.text('Documento generado automáticamente por Trading Inteligente', 105, 280, { align: 'center' });
-            
-            return doc.output('blob');
-        }
-
-        // Helper to force download blob
-        function downloadBlob(blob, filename) {
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = filename;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            URL.revokeObjectURL(url);
-        }
-
-        // Collect user data
-        function collectUserDataFromPayment() {
-            const name = document.getElementById('userName')?.value || document.getElementById('contractName')?.value || '';
-            const email = document.getElementById('userEmail')?.value || '';
-            const phone = document.getElementById('userPhone')?.value || document.getElementById('contractPhone')?.value || '';
-            const address = document.getElementById('contractAddress')?.value || '';
-            const id = document.getElementById('userId')?.value || document.getElementById('contractId')?.value || '';
-            const city = document.getElementById('userCity')?.value || document.getElementById('contractCity')?.value || '';
-            const signature = signaturePad && !signaturePad.isEmpty() ? signaturePad.toDataURL('image/png') : null;
-            
-            return {
-                name, email, phone, address, id, city,
-                date: new Date().toLocaleDateString('es-ES'),
-                signature
-            };
-        }
-
-        // --- PAYPAL FLOW ---
-        document.getElementById('paypalBtn')?.addEventListener('click', function() {
-            const name = document.getElementById('userName')?.value;
-            const email = document.getElementById('userEmail')?.value;
-            const phone = document.getElementById('userPhone')?.value;
-            const id = document.getElementById('userId')?.value;
-            const city = document.getElementById('userCity')?.value;
-            const agree = document.getElementById('agreeTermsModal')?.checked;
-
-            if (!name || !email || !phone || !id || !city || !agree) {
-                showAlert('Completa todos los campos y acepta el contrato antes de continuar', 'danger');
-                return;
-            }
-            if (!validateEmail(email)) {
-                showAlert('Por favor, introduce un email válido', 'danger');
-                return;
-            }
-
-            const productName = document.getElementById('modalProductName').textContent || 'LeidyBot1';
-            const productPrice = (document.getElementById('modalProductPrice').textContent || '$260').replace('$', '').trim();
-
-            const userData = collectUserDataFromPayment();
-            const productData = { name: productName, price: productPrice };
-            const paymentData = { method: 'PayPal', reference: '@williarvi', date: userData.date };
-
-            // Generate PDFs
-            const contractBlob = generateContractPDFBlob(userData, productData);
-            const invoiceBlob = generateInvoicePDFBlob(userData, productData, paymentData);
-
-            // Download both
-            downloadBlob(contractBlob, `Contrato_${productName}_${userData.name.replace(/\s+/g, '_')}.pdf`);
-            downloadBlob(invoiceBlob, `Factura_${productName}_${userData.name.replace(/\s+/g, '_')}.pdf`);
-
-            showAlert('Factura y contrato generados. Serás redirigido a PayPal.', 'success');
-
-            // Redirect to PayPal after a short delay
-            setTimeout(() => {
-                window.open('https://www.paypal.com/co/home', '_blank');
-                
-                // Close modal
-                const modal = bootstrap.Modal.getInstance(document.getElementById('checkoutModal'));
-                if (modal) modal.hide();
-                
-                // Clear form fields
-                document.getElementById('userName').value = '';
-                document.getElementById('userEmail').value = '';
-                document.getElementById('userPhone').value = '';
-                document.getElementById('userId').value = '';
-                document.getElementById('userCity').value = '';
-                document.getElementById('agreeTermsModal').checked = false;
-                
-                if (signaturePad) {
-                    signaturePad.clear();
-                }
-            }, 1500);
-        });
-
-        // --- BANK FLOW ---
-        document.getElementById('confirmBankPayment')?.addEventListener('click', function() {
-            const name = document.getElementById('userName')?.value;
-            const email = document.getElementById('userEmail')?.value;
-            const phone = document.getElementById('userPhone')?.value;
-            const id = document.getElementById('userId')?.value;
-            const city = document.getElementById('userCity')?.value;
-            const agree = document.getElementById('agreeTermsModal')?.checked;
-
-            if (!name || !email || !phone || !id || !city || !agree) {
-                showAlert('Completa todos los campos y acepta el contrato antes de confirmar', 'danger');
-                return;
-            }
-            if (!validateEmail(email)) {
-                showAlert('Por favor, introduce un email válido', 'danger');
-                return;
-            }
-
-            const productName = document.getElementById('modalProductName').textContent || 'LeidyBot1';
-            const productPrice = (document.getElementById('modalProductPrice').textContent || '$260').replace('$', '').trim();
-
-            const userData = collectUserDataFromPayment();
-            const productData = { name: productName, price: productPrice };
-            const paymentData = { method: 'Transferencia Bancaria', reference: '@WAV687', date: userData.date };
-
-            // Generate PDFs
-            const contractBlob = generateContractPDFBlob(userData, productData);
-            const invoiceBlob = generateInvoicePDFBlob(userData, productData, paymentData);
-
-            // Download both
-            downloadBlob(contractBlob, `Contrato_${productName}_${userData.name.replace(/\s+/g, '_')}.pdf`);
-            downloadBlob(invoiceBlob, `Factura_${productName}_${userData.name.replace(/\s+/g, '_')}.pdf`);
-
-            showAlert('Documentos descargados. Realiza la transferencia a la cuenta NU (llave @WAV687) y envía el comprobante.', 'success');
-
-            // Close modal
-            const modal = bootstrap.Modal.getInstance(document.getElementById('checkoutModal'));
-            if (modal) modal.hide();
-        });
-
-        // --- DOWNLOAD CONTRACT BUTTON (contract section) ---
-        document.getElementById('downloadContractBtn')?.addEventListener('click', function() {
-            if (!document.getElementById('agreeContract')?.checked) {
-                showAlert('Debes aceptar el contrato antes de descargar.', 'danger');
-                return;
-            }
-            
-            const productName = 'LeidyBot1';
-            const productPrice = '260';
-            const userData = {
-                name: document.getElementById('contractName')?.value || '',
-                id: document.getElementById('contractId')?.value || '',
-                email: '',
-                phone: document.getElementById('contractPhone')?.value || '',
-                address: document.getElementById('contractAddress')?.value || '',
-                city: document.getElementById('contractCity')?.value || '',
-                date: new Date().toLocaleDateString('es-ES'),
-                signature: signaturePad && !signaturePad.isEmpty() ? signaturePad.toDataURL('image/png') : null
-            };
-            
-            const productData = { name: productName, price: productPrice };
-            const contractBlob = generateContractPDFBlob(userData, productData);
-            
-            downloadBlob(contractBlob, `Contrato_${productName}_${userData.name.replace(/\s+/g, '_')}.pdf`);
-            showAlert('Contrato descargado correctamente', 'success');
-        });
-
-        // --- WAITLIST FORM ---
-        const waitlistForm = document.getElementById('waitlistForm');
-        if (waitlistForm) {
-            waitlistForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                const email = document.getElementById('waitlistEmail')?.value;
-                
-                if (!email || !validateEmail(email)) { 
-                    showAlert('Introduce un email válido', 'danger'); 
-                    return; 
-                }
-                
-                showAlert('¡Gracias por unirte a la lista de espera! Te notificaremos cuando WilliBot1 esté disponible.', 'success');
-                waitlistForm.reset();
-                
-                setTimeout(() => { 
-                    const modal = bootstrap.Modal.getInstance(document.getElementById('waitlistModal')); 
-                    if (modal) modal.hide(); 
-                }, 1500);
-            });
-        }
-
-        // --- TESTIMONIALS (localStorage) ---
-        const testimonialInner = document.getElementById('testimonialInner');
-        const initialTestimonials = [
-            { name: 'Carlos M.', text: '"LeidyBot1 ha transformado mi forma de operar. La gestión de riesgo es excepcional y los resultados son consistentes mes tras mes."' },
-            { name: 'Ana R.', text: '"Estoy impaciente por probar WilliBot1. Si es la mitad de bueno como LeidyBot1, será una revolución en el trading automatizado."' },
-            { name: 'Javier L.', text: '"Opero con LeidyBot1 en 3 cuentas diferentes con configuraciones distintas. Los resultados son consistentes en todas."' },
-            { name: 'Laura T.', text: '"Invertí $500 en enero y hoy tengo más de $9,000. La mejor decisión financiera que he tomado."' },
-            { name: 'Miguel Ángel', text: '"Llevo 4 meses usando LeidyBot1 y he obtenido un 25% de rentabilidad mensual. Superó todas mis expectativas."' },
-            { name: 'Sofía R.', text: '"El soporte es excelente. Me ayudaron a configurar todo y resolver mis dudas rápidamente."' },
-            { name: 'Ricardo P.', text: '"Después de probar varios EAs, finalmente encontré uno que realmente funciona. LeidyBot1 es increíble."' },
-            { name: 'Elena C.', text: '"La gestión de riesgo es lo que más me gusta. Me siento seguro incluso en mercados volátiles."' },
-            { name: 'Diego M.', text: '"Empecé con $200 y en 6 meses tengo $2,500. Los resultados hablan por sí solos."' },
-            { name: 'Carolina V.', text: '"Recomiendo LeidyBot1 a todos mis amigos. Es transparente y cumple lo que promete."' }
-        ];
-        
-        let testimonials = JSON.parse(localStorage.getItem('ti_testimonials')) || initialTestimonials;
-
-        function renderTestimonials(list) {
-            if (!testimonialInner) return;
-            
-            testimonialInner.innerHTML = '';
-            list.forEach((t, idx) => {
-                const item = document.createElement('div');
-                item.className = `carousel-item ${idx === 0 ? 'active' : ''}`;
-                item.innerHTML = `
-                    <div class="d-flex gap-3 align-items-center justify-content-center">
-                        <div class="testimonial-avatar">${t.name[0]}</div>
-                        <div class="text-start">
-                            <div class="small text-muted">${t.text}</div>
-                            <div class="mt-2"><strong>${t.name</strong></div>
-                        </div>
-                    </div>
-                `;
-                testimonialInner.appendChild(item);
-            });
-        }
-        
-        renderTestimonials(testimonials);
-
-        // Testimonial form submission
-        const testimonialForm = document.getElementById('testimonialForm');
-        if (testimonialForm) {
-            testimonialForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                const name = document.getElementById('testName')?.value.trim();
-                const message = document.getElementById('testMessage')?.value.trim();
-                
-                if (!name || !message) { 
-                    showAlert('Completa nombre y testimonio', 'danger'); 
-                    return; 
-                }
-                
-                testimonials.unshift({ name: name, text: `"${message}"` });
-                
-                // Keep only the latest 10 testimonials
-                if (testimonials.length > 10) {
-                    testimonials = testimonials.slice(0, 10);
-                }
-                
-                localStorage.setItem('ti_testimonials', JSON.stringify(testimonials));
-                renderTestimonials(testimonials);
-                testimonialForm.reset();
-                
-                showAlert('¡Gracias por tu testimonio! Se ha añadido al carrusel.', 'success');
-            });
-        }
-
-        // Initialize tooltips
-        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-        tooltipTriggerList.map(function (tooltipTriggerEl) {
-            return new bootstrap.Tooltip(tooltipTriggerEl);
-        });
-
-        // Add animation to elements on scroll
-        function animateOnScroll() {
-            const elements = document.querySelectorAll('.card, .result-card, .pricing-card');
-            
-            elements.forEach(element => {
-                const position = element.getBoundingClientRect().top;
-                const screenPosition = window.innerHeight / 1.3;
-                
-                if (position < screenPosition) {
-                    element.style.opacity = 1;
-                    element.style.transform = 'translateY(0)';
-                }
-            });
-        }
-        
-        // Set initial state for animation
-        const animatedElements = document.querySelectorAll('.card, .result-card, .pricing-card');
-        animatedElements.forEach(el => {
-            el.style.opacity = 0;
-            el.style.transform = 'translateY(20px)';
-            el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-        });
-        
-        // Run on load and scroll
-        window.addEventListener('load', animateOnScroll);
-        window.addEventListener('scroll', animateOnScroll);
-    });
-</script>
+<script src="script.js"></script>
 
 </body>
 </html>
