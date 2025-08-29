@@ -13,23 +13,65 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  // --- SIGNATURE PAD SETUP ---
+  // --- SIGNATURE PAD SETUP MEJORADO (100% RESPONSIVE) ---
   let signaturePad = null;
   const canvas = document.getElementById('signatureCanvas');
+
   if (canvas) {
-    // Adjust canvas for high DPI displays
-    const ratio = Math.max(window.devicePixelRatio || 1, 1);
-    canvas.width = canvas.offsetWidth * ratio;
-    canvas.height = canvas.offsetHeight * ratio;
-    canvas.getContext("2d").scale(ratio, ratio);
+    // Configuración responsive mejorada
+    function setupSignaturePad() {
+      const signatureContainer = canvas.parentElement;
+      const containerWidth = signatureContainer.offsetWidth;
+      
+      // Tamaño responsive
+      canvas.width = containerWidth;
+      canvas.height = 150; // Altura fija pero adecuada
+      
+      // Para alta densidad de píxeles
+      const ratio = Math.max(window.devicePixelRatio || 1, 1);
+      canvas.width = canvas.width * ratio;
+      canvas.height = canvas.height * ratio;
+      canvas.getContext('2d').scale(ratio, ratio);
+      
+      // Estilos CSS para control visual
+      canvas.style.width = '100%';
+      canvas.style.height = '150px';
+      canvas.style.border = '1px dashed #ccc';
+      canvas.style.borderRadius = '8px';
+      canvas.style.touchAction = 'none'; // Importante para móviles
+      
+      // Inicializar o reinicializar signature pad
+      if (signaturePad) {
+        const data = signaturePad.toData();
+        signaturePad.clear();
+        signaturePad.off();
+      }
+      
+      signaturePad = new SignaturePad(canvas, {
+        backgroundColor: 'rgba(255, 255, 255, 0)',
+        penColor: 'rgb(0, 0, 0)',
+        minWidth: 1.5,
+        maxWidth: 3.5,
+        throttle: 16, // Mejor rendimiento en móviles
+        velocityFilterWeight: 0.7
+      });
+      
+      // Mejorar la experiencia táctil
+      if ('ontouchstart' in window) {
+        canvas.style.cursor = 'pointer';
+      }
+    }
     
-    signaturePad = new SignaturePad(canvas, {
-      backgroundColor: 'rgba(255, 255, 255, 0)',
-      penColor: 'rgb(0, 0, 0)',
-      minWidth: 1,
-      maxWidth: 3,
+    // Configurar inicialmente
+    setupSignaturePad();
+    
+    // Reconfigurar en resize y orientation change
+    window.addEventListener('resize', setupSignaturePad);
+    window.addEventListener('orientationchange', function() {
+      setTimeout(setupSignaturePad, 200);
     });
     
+    // Botón limpiar
     const clearSignatureBtn = document.getElementById('clearSignature');
     if (clearSignatureBtn) {
       clearSignatureBtn.addEventListener('click', () => {
@@ -38,21 +80,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
       });
     }
-    
-    // Make signature pad responsive
-    window.addEventListener('resize', function() {
-      const ratio = Math.max(window.devicePixelRatio || 1, 1);
-      canvas.width = canvas.offsetWidth * ratio;
-      canvas.height = canvas.offsetHeight * ratio;
-      canvas.getContext("2d").scale(ratio, ratio);
-      
-      // Reapply the signature if it exists
-      if (signaturePad && !signaturePad.isEmpty()) {
-        const data = signaturePad.toData();
-        signaturePad.clear();
-        signaturePad.fromData(data);
-      }
-    });
   }
 
   // --- SET CONTRACT DATE ---
@@ -689,6 +716,43 @@ document.addEventListener('DOMContentLoaded', function() {
       showAlert('¡Gracias por tu testimonio! Se ha añadido al carrusel.', 'success');
     });
   }
+
+  // ===== MODAL PARA IMÁGENES AMPLIADAS =====
+  function initImageModal() {
+    // Crear modal
+    const modal = document.createElement('div');
+    modal.className = 'img-modal';
+    modal.innerHTML = `
+        <span class="close-modal">&times;</span>
+        <img class="img-modal-content" id="expandedImg">
+    `;
+    document.body.appendChild(modal);
+    
+    // Funcionalidad para abrir modal
+    document.querySelectorAll('.img-thumb').forEach(thumb => {
+        thumb.addEventListener('click', function() {
+            const modal = document.querySelector('.img-modal');
+            const modalImg = document.getElementById('expandedImg');
+            modal.style.display = 'block';
+            modalImg.src = this.src;
+        });
+    });
+    
+    // Cerrar modal
+    document.querySelector('.close-modal').addEventListener('click', function() {
+        document.querySelector('.img-modal').style.display = 'none';
+    });
+    
+    // Cerrar al hacer clic fuera de la imagen
+    document.querySelector('.img-modal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            this.style.display = 'none';
+        }
+    });
+  }
+
+  // Llamar la función al cargar
+  initImageModal();
 
   // Initialize tooltips
   const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
