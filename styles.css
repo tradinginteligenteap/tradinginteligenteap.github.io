@@ -275,20 +275,80 @@ body {
   background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
 }
 
+/* ===== MEJORAS PARA IMÁGENES Y GALERÍA ===== */
+.product-media {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.gallery-thumb {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
 .img-thumb {
-  width: 80px;
-  height: 60px;
-  object-fit: cover;
-  border-radius: 8px;
-  border: 2px solid transparent;
-  transition: all 0.3s ease;
-  cursor: pointer;
+    width: 150px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 12px;
+    border: 3px solid transparent;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }
 
 .img-thumb:hover {
-  transform: scale(1.1);
-  border-color: var(--gold);
-  box-shadow: 0 5px 15px rgba(255,215,0,0.2);
+    transform: scale(1.08);
+    border-color: var(--gold);
+    box-shadow: 0 8px 25px rgba(255, 215, 0, 0.3);
+}
+
+/* Hacer el video más grande */
+.product-media .ratio-16x9 {
+    height: 320px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+}
+
+/* Modal para imagen ampliada */
+.img-modal {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    padding-top: 60px;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+}
+
+.img-modal-content {
+    display: block;
+    margin: 0 auto;
+    max-width: 90%;
+    max-height: 80vh;
+    border-radius: 8px;
+    box-shadow: 0 0 25px rgba(255, 215, 0, 0.3);
+}
+
+.close-modal {
+    position: absolute;
+    top: 15px;
+    right: 35px;
+    color: var(--gold);
+    font-size: 40px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.close-modal:hover {
+    color: #fff;
 }
 
 .robot-description {
@@ -517,6 +577,17 @@ body {
   padding: 1rem;
   border: 2px dashed #ddd;
   transition: all 0.3s ease;
+  width: 100%;
+  height: auto;
+  overflow: hidden;
+}
+
+#signatureCanvas {
+  width: 100%;
+  height: 150px;
+  border: 1px dashed #ccc;
+  border-radius: 8px;
+  touch-action: none;
 }
 
 .signature-pad:focus-within {
@@ -728,6 +799,16 @@ section {
   .price-block h2 {
     font-size: 2.5rem;
   }
+  
+  /* Responsive para imágenes */
+  .img-thumb {
+    width: 120px;
+    height: 100px;
+  }
+  
+  .product-media .ratio-16x9 {
+    height: 250px;
+  }
 }
 
 @media (max-width: 576px) {
@@ -743,5 +824,24 @@ section {
   }
   .contract-white {
     padding: 2rem 1.5rem;
+  }
+  
+  /* Responsive para imágenes móviles */
+  .img-thumb {
+    width: 100px;
+    height: 80px;
+  }
+  
+  .product-media .ratio-16x9 {
+    height: 200px;
+  }
+  
+  .gallery-thumb {
+    gap: 8px;
+  }
+  
+  /* Ajuste de firma para móviles */
+  #signatureCanvas {
+    height: 120px;
   }
 }
